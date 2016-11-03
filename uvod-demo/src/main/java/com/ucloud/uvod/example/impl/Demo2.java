@@ -142,7 +142,7 @@ public class Demo2 extends AppCompatActivity implements RadioGroup.OnCheckedChan
 
 
 	@Override
-	public void onEvent(int what, String message) {
+	public void onEvent(int what, Object message) {
 		switch (what) {
 			case UVideoView.Callback.EVENT_PLAY_START:    //prepared
 				definitions = mVideoView.getDefinitions();
@@ -186,6 +186,7 @@ public class Demo2 extends AppCompatActivity implements RadioGroup.OnCheckedChan
 			case UVideoView.Callback.EVENT_PLAY_DESTORY:
 				break;
 			case UVideoView.Callback.EVENT_PLAY_ERROR:
+				Toast.makeText(this, "EVENT_PLAY_ERROR:" + message, Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}

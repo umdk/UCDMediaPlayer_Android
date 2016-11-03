@@ -195,7 +195,12 @@ mVideoView.registerCallback(this);
 <a name="7"></a>
 # 7 版本历史
 
-* v1.5.0 (2015.12.01)
+* v1.4.1 (2016.11.03)
+    - 修改接口void onEvent(int,String) -> void onEvent(int,Object)
+    - 增加setPrepareTimeout(long)接口
+    - 增加setReadframeTimeout(long)接口
+
+* v1.3.5 (2015.12.01)
     - 增加UVideoView接口
     - 默认ui界面实现
     - 移至demo

@@ -368,8 +368,7 @@ public class UVideoMainView extends FrameLayout implements UPlayer, UTopView.Cal
     };
 
     @Override
-    public void onEvent(int what, String message) {
-        Log.d(TAG, message);
+    public void onEvent(int what, Object message) {
         switch (what){
             case UVideoView.Callback.EVENT_PLAY_START: //prepared
                 dealOnPrepared();
