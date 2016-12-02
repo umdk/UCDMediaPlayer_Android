@@ -12,15 +12,17 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.ucloud.uvod.common.util.StringUtil;
 import com.ucloud.uvod.example.R;
+import com.ucloud.uvod.common.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-public class UBottomView extends RelativeLayout{
-
-	public static final String TAG = "UBottomView";
+/**
+ *
+ * @author lw.tan
+ *
+ */
+public class UBottomView extends RelativeLayout {
 	private static final int SEEKBAR_MAX = 1000;
 	private static int DEFAULT_SEEK_PROGRESS = 40 * 1000;
 
@@ -61,7 +63,7 @@ public class UBottomView extends RelativeLayout{
 
 	private long mDuration;
 	private boolean isInitSeekBar;
-	private UPlayer mPlayerContrller;
+	private UEasyPlayer mPlayerContrller;
 
 
 	private int lastSeekPosition = -1;
@@ -181,10 +183,10 @@ public class UBottomView extends RelativeLayout{
 		mSeekBar.setProgress(pos);
 		String content;
 		if (currposition > 0) {
-			content = StringUtil.getTimeFormatString(currposition / 1000);
+			content = Utils.getTimeFormatString(currposition / 1000);
 		} else {
 			if (mDuration > 0) {
-				content = StringUtil.getTimeFormatString(0);
+				content = Utils.getTimeFormatString(0);
 			} else {
 				content = "";
 			}
@@ -211,7 +213,7 @@ public class UBottomView extends RelativeLayout{
 
 	private void initVideoDuration(long duration) {
 		mDuration = duration;
-		String content = StringUtil.getTimeFormatString((int) duration / 1000);
+		String content = Utils.getTimeFormatString((int) duration / 1000);
 		DEFAULT_SEEK_PROGRESS = (int) (15 * mDuration / 1000);
 		if (mDurationTxtv != null) {
 			mDurationTxtv.setText(content);
@@ -272,7 +274,7 @@ public class UBottomView extends RelativeLayout{
 
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
-				boolean fromUser) {
+									  boolean fromUser) {
 			if (mFastSeekBar != null) {
 				mFastSeekBar.setProgress(progress);
 			}
@@ -282,7 +284,7 @@ public class UBottomView extends RelativeLayout{
 		}
 	};
 
-	public void setPlayerController(UPlayer controller) {
+	public void setPlayerController(UEasyPlayer controller) {
 		mPlayerContrller = controller;
 	}
 
@@ -322,7 +324,7 @@ public class UBottomView extends RelativeLayout{
 
 	private void doFastSeek(int seekTo) {
 		if (mSeekBar != null && mFastSeekBar != null) {
-			mSeekingIndexTxtv.setText(StringUtil.getTimeFormatString((seekTo) / 1000));
+			mSeekingIndexTxtv.setText(Utils.getTimeFormatString((seekTo) / 1000));
 			int progress = getProgressByPosition(seekTo);
 			mFastSeekBar.setProgress(progress);
 			fastSeekToTemp = seekTo;
@@ -370,9 +372,11 @@ public class UBottomView extends RelativeLayout{
 	public void setSeekEnable(boolean isSeekEnable) {
 		if (mFastSeekBar != null) {
 			mFastSeekBar.setEnabled(isSeekEnable);
+			mFastSeekBar.setVisibility(isSeekEnable ? View.VISIBLE : View.GONE);
 		}
 		if (mSeekBar != null) {
 			mSeekBar.setEnabled(isSeekEnable);
+			mSeekBar.setVisibility(isSeekEnable ? View.VISIBLE : View.GONE);
 		}
 	}
 }

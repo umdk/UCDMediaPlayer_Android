@@ -6,14 +6,16 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class UMenuItem implements Parcelable{
-	public String title;
-	public String type;
-	public String description;
-	public UMenuItem parent;
-	public int defaultSelected = 0;
-	public boolean isVisible;
+/**
+ * Created by lw.tan on 2015/10/10.
+ */
+public class UMenuItem implements Parcelable {
+	public final String title;
+	public final String type;
+	public final String description;
+	public final UMenuItem parent;
+	public int defaultSelected;
+	public final boolean isVisible;
 
 	public List<UMenuItem> childs;
 

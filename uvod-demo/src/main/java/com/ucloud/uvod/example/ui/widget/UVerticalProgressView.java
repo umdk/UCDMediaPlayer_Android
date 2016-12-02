@@ -16,6 +16,11 @@ import com.ucloud.uvod.example.ui.base.UBaseHelper.ChangeListener;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * 
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public class UVerticalProgressView extends RelativeLayout implements
         ChangeListener {
     private static final int MSG_HIDE = 1;

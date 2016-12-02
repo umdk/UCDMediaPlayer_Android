@@ -15,17 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ucloud.uvod.common.util.SystemUtil;
 import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.base.UMenuItem;
 import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
-import com.ucloud.uvod.widget.v2.UVideoView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
+/**
+ *
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public class USettingMenuView extends LinearLayout {
-	private static final String TAG = "USettingMenuView";
 
 	@Bind(R.id.listview)
 	ListView mSettingItemLv;
@@ -113,7 +114,6 @@ public class USettingMenuView extends LinearLayout {
 				UMenuItem contentMenuItem = menuItem.childs.get(position);
 				if (menuItem.defaultSelected != position) {
 					menuItem.defaultSelected = position;
-					Log.i(TAG, "defaultSelected:" + menuItem.defaultSelected);
 					mMenuSettingContentAdapter.notifyDataSetChanged();
 					mMenuSettingAdapter.notifyDataSetChanged();
 					if (mSettingMenuViewClickListener != null) {
@@ -147,13 +147,12 @@ public class USettingMenuView extends LinearLayout {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = View.inflate(getContext(), SystemUtil.getResourceIdByName(getContext(), "layout", "player_layout_setting_menu_item"), null);
-			TextView titleTxtv= (TextView) view.findViewById(SystemUtil.getResourceIdByName(getContext(), "id", "title_txtv"));
-			TextView descriptionTxtv = (TextView) view.findViewById(SystemUtil.getResourceIdByName(getContext(), "id", "description_txtv"));
+			View view = View.inflate(getContext(), R.layout.player_layout_setting_menu_item, null);
+			TextView titleTxtv= (TextView) view.findViewById(R.id.title_txtv);
+			TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
 			UMenuItem item = mMainMenuItem.childs.get(position);
 			if (item != null) {
 				titleTxtv.setText(item.title);
-				UVideoView.DefinitionType type = UVideoView.DefinitionType.find(item.type);
 				if (item.defaultSelected >=0 && item.defaultSelected <= item.childs.size() - 1) {
 					descriptionTxtv.setText(item.childs.get(item.defaultSelected).title);
 				} else {
@@ -164,11 +163,11 @@ public class USettingMenuView extends LinearLayout {
 			}
 
 			if(position == mMainMenuItem.defaultSelected) {
-				titleTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_progress")));
-				descriptionTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_progress")));
+				titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
 			}else{
-				titleTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_white")));
-				descriptionTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_white_alpha_alpha40")));
+				titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
+				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
 			}
 			return view;
 		}
@@ -204,24 +203,24 @@ public class USettingMenuView extends LinearLayout {
 
 			View view = null;
 			if (item != null && !TextUtils.isEmpty(item.description)) {
-				view = View.inflate(getContext(), SystemUtil.getResourceIdByName(getContext(), "layout", "player_layout_setting_menu_content_item"), null);
+				view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item, null);
 			} else {
-				view = View.inflate(getContext(),SystemUtil.getResourceIdByName(getContext(), "layout", "player_layout_setting_menu_content_item2"), null);
+				view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item2, null);
 			}
-			TextView titleTxtv= (TextView) view.findViewById(SystemUtil.getResourceIdByName(getContext(), "id", "title_txtv"));
-			TextView descriptionTxtv = (TextView) view.findViewById(SystemUtil.getResourceIdByName(getContext(), "id", "description_txtv"));
+			TextView titleTxtv= (TextView) view.findViewById(R.id.title_txtv);
+			TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
 			if (item != null) {
 				titleTxtv.setText(item.title);
 				descriptionTxtv.setText(item.description);
 			}
 
 			if((item.parent != null && position == item.parent.defaultSelected) || item.parent.childs.size() == 1){
-				titleTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_progress")));
-				descriptionTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_progress")));
+				titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
 			} else {
 				view.setBackgroundResource(android.R.color.transparent);
-				titleTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_white")));
-				descriptionTxtv.setTextColor(getResources().getColor(SystemUtil.getResourceIdByName(getContext(), "color", "color_white_alpha_alpha40")));
+				titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
+				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
 			}
 			return view;
 		}
@@ -230,5 +229,4 @@ public class USettingMenuView extends LinearLayout {
 	public void setOnMenuItemSelectedListener(Callback l) {
 		mSettingMenuViewClickListener = l;
 	}
-
 }

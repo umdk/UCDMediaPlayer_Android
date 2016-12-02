@@ -2,11 +2,9 @@
 
 UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
 
-![screenshot-1](screenshot/screenshot-1.png)
-
-![screenshot-2](screenshot/screenshot-2.png)
-
-![screenshot-3](screenshot/screenshot-3.png)
+![screenshot-1](screenshot/screenshot-1.png)  
+![screenshot-2](screenshot/screenshot-2.png)  
+![screenshot-3](screenshot/screenshot-3.png)  
 
 - 1 [阅读对象](#1)
 - 2 [功能特性](#2)
@@ -205,6 +203,10 @@ mVideoView.registerCallback(this);
 
 <a name="7"></a>
 # 7 版本历史
+
+* v1.5.0 (2016.12.02)
+    - 增加UMediaProfile播放器参数设置
+    - 优化UVideoView接口
 
 * v1.4.1 (2016.11.03)
     - 修改接口void onEvent(int,String) -> void onEvent(int,Object)

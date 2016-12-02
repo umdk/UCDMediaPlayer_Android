@@ -3,11 +3,11 @@ package com.ucloud.uvod.example.ui.base;
 
 import android.content.Context;
 
-import com.ucloud.uvod.widget.v2.UVideoView;
 import com.ucloud.uvod.example.R;
 
-import java.util.List;
-
+/**
+ * Created by lw.tan on 2015/8/11.
+ */
 public class UMenuItemHelper {
     private static final String TAG = "UMenuItemHelper";
     private static UMenuItem mMainMenuItem;
@@ -40,22 +40,11 @@ public class UMenuItemHelper {
         return type;
     }
 
-   public UMenuItem buildVideoDefinitationMenuItem(List<UVideoView.DefinitionType> definitions, int index) {
-        UMenuItem menuItem = new UMenuItem.Builder().title(mContext.getResources().getString(R.string.menu_item_title_definition)).index(index).builder();
-        String[] retNames = mContext.getResources().getStringArray(R.array.pref_definition_names);
-        String[] retValues = mContext.getResources().getStringArray(R.array.pref_definition_values);
-        for(UVideoView.DefinitionType definition: definitions) {
-            String title = get(retNames, retValues, definition.name());
-            menuItem.childs.add(new UMenuItem.Builder().title(title).type(title).parent(menuItem).builder());
-        }
-        return menuItem;
-    }
-
-    public UMenuItem buildVideoDecoderMenuItem(int defaultSelect) {
+    public UMenuItem buildVideoPlayerMenuItem(int defaultSelect) {
        return buildVideoMenuItem(
-               mContext.getResources().getString(R.string.menu_item_title_decoder),
-               R.array.pref_decoder_names,
-               R.array.pref_decoder_values,
+               mContext.getResources().getString(R.string.menu_item_title_videocodec),
+               R.array.pref_videocodec_names,
+               R.array.pref_videocodec_values,
                defaultSelect);
     }
 

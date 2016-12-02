@@ -4,6 +4,9 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
 
+/**
+ * Created by lw.tan on 2015/10/10.
+ */
 public class UVolumeHelper extends UBaseHelper {
 	public static int DEFAULT_VOLUME_LEVEL = 1;
 	private AudioManager mAudioManager;

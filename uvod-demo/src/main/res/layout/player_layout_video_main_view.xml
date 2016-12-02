@@ -6,22 +6,397 @@
     android:background="@color/color_transparent"
     android:longClickable="true" >
 
-    <include layout="@layout/player_layout_rotate_video_view"/>
+    <com.ucloud.uvod.example.ui.widget.URotateVideoView
+        android:id="@+id/videoview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_transparent"
+        android:layout_gravity="center" />
 
-    <include layout="@layout/player_layout_top_view" />
+    <com.ucloud.uvod.example.ui.UTopView
+        android:id="@+id/topview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_100"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:background="#B0000000" >
 
-    <include layout="@layout/player_layout_volume_view" />
+        <ImageButton
+            android:id="@+id/topview_left_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:background="@drawable/player_selecter_topview_left_button" />
 
-    <include layout="@layout/player_layout_brightness_view" />
+        <TextView
+            android:id="@+id/topview_title_txtv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="UCloud"
+            android:textColor="@android:color/darker_gray" />
 
-	<include layout="@layout/player_layout_setting_menu" />
+        <ImageButton
+            android:id="@+id/topview_right_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@drawable/player_selecter_topview_right_button" />
 
-    <include layout="@layout/player_layout_status_view"/>
+    </com.ucloud.uvod.example.ui.UTopView>
 
-    <include layout="@layout/plyaer_layout_simple_menu"/>
+    <com.ucloud.uvod.example.ui.widget.UVerticalProgressView
+        android:id="@+id/volume_view"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_252"
+        android:layout_centerVertical="true"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:background="@drawable/player_bg_vertical_progress_view"
+        android:visibility="invisible" >
 
-    <include layout="@layout/player_layout_bottom_view" />
+        <ImageView
+            android:id="@+id/volume_icon"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_10" />
 
-    <include layout="@layout/player_layout_loading_view"/>
+        <com.ucloud.uvod.example.ui.widget.UVerticalProgressBar
+            android:id="@+id/volume_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/volume_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/player_style_vertical_progress_view" />
+
+    </com.ucloud.uvod.example.ui.widget.UVerticalProgressView>
+
+    <com.ucloud.uvod.example.ui.widget.UVerticalProgressView
+        android:id="@+id/brightness_view"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_252"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/dp_40"
+        android:background="@drawable/player_bg_vertical_progress_view"
+        android:visibility="invisible" >
+
+        <ImageView
+            android:id="@id/volume_icon"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_10" />
+
+        <com.ucloud.uvod.example.ui.widget.UVerticalProgressBar
+            android:id="@id/volume_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/volume_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/player_style_vertical_progress_view" />
+
+    </com.ucloud.uvod.example.ui.widget.UVerticalProgressView>
+
+    <com.ucloud.uvod.example.ui.USettingMenuView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/setting_menu_view_ll"
+        android:visibility="gone"
+        android:layout_gravity="top|right|center_vertical" >
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="match_parent"
+            android:background="@color/color_setting_menu_content_bg" >
+            <TextView
+                android:id="@+id/menu_description_txtv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_white_alpha_alpha40"
+                android:textSize="@dimen/sp_40"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:layout_margin="@dimen/dp_20"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/color_white"
+                android:layout_below="@id/menu_description_txtv"
+                android:layout_margin="@dimen/dp_5"
+                android:id="@+id/sp_line1"
+                android:layout_height="@dimen/dp_0.1"/>
+            <ListView
+                android:id="@+id/listview_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@null"
+                android:listSelector="@android:color/transparent" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="match_parent"
+            android:background="@color/color_setting_menu_bg" >
+            <TextView
+                android:id="@+id/menu_txtv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_white_alpha_half"
+                android:textSize="@dimen/sp_40"
+                android:layout_margin="@dimen/dp_20"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/color_white"
+                android:layout_below="@id/menu_txtv"
+                android:layout_margin="@dimen/dp_5"
+                android:id="@+id/sp_line2"
+                android:layout_height="@dimen/dp_0.1" />
+            <ListView
+                android:id="@+id/listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@null"
+                android:listSelector="@android:color/transparent" />
+        </RelativeLayout>
+
+    </com.ucloud.uvod.example.ui.USettingMenuView>
+
+    <ImageView
+        android:id="@+id/circle_play_status"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/player_icon_play_status"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/dp_20"
+        android:orientation="vertical"
+        android:id="@+id/ll_screen_and_comment_container"
+        android:visibility="visible"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <ImageView
+            android:id="@+id/circle_screen_shot"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:contentDescription="@string/app_name"
+            android:visibility="gone"
+            android:src="@drawable/player_icon_screen_shot_action" />
+
+    </LinearLayout>
+
+    <com.ucloud.uvod.example.ui.UBottomView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/bottomview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_150"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        android:background="#B0000000" >
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/img_btn_download"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:visibility="gone"
+                android:background="@drawable/player_selecter_bottomview_download_button"
+                android:contentDescription="@string/app_name" />
+
+            <ImageButton
+                android:id="@+id/img_btn_brightness"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:background="@drawable/player_selecter_bottomview_brightness_button"
+                android:contentDescription="@string/app_name" />
+
+            <ImageButton
+                android:id="@+id/img_btn_volume"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:background="@drawable/player_selecter_bottomview_volume_button"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/ll" >
+
+            <ImageButton
+                android:id="@+id/img_bt_pause_play"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_120"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/player_selecter_bottomview_play_button"
+                android:contentDescription="@string/app_name" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/img_bt_pause_play"
+                android:paddingBottom="@dimen/dp_60" >
+
+                <TextView
+                    android:id="@+id/txtv_current_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/sp_25" />
+
+                <TextView
+                    android:id="@+id/txtv_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/sp_25" />
+
+                <SeekBar
+                    android:id="@+id/fast_seekbar"
+                    android:layout_width="@dimen/dp_940"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_toLeftOf="@id/txtv_duration"
+                    android:layout_toRightOf="@id/txtv_current_position"
+                    android:padding="@dimen/dp_1"
+                    android:progressDrawable="@drawable/player_style_fast_seekbar_drawable"
+                    android:thumb="@android:color/transparent" />
+
+                <SeekBar
+                    android:id="@+id/seekbar"
+                    style="@style/PlayerSeekBarStyle"
+                    android:layout_width="@dimen/dp_940"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_toLeftOf="@id/txtv_duration"
+                    android:layout_toRightOf="@id/txtv_current_position"
+                    android:background="@drawable/player_bg_my_seekbar"
+                    android:padding="@dimen/dp_1"
+                    android:thumb="@android:color/transparent" />
+
+                <RelativeLayout
+                    android:id="@+id/fast_seek_index_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_100"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/txtv_current_position"
+                    android:visibility="gone" >
+
+                    <LinearLayout
+                        android:id="@+id/index_separator"
+                        android:layout_width="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/dp_1"
+                        android:layout_marginLeft="@dimen/dp_49"
+                        android:layout_marginTop="@dimen/dp_2"
+                        android:background="@color/color_white_alpha_half"
+                        android:orientation="horizontal" />
+
+                    <TextView
+                        android:id="@+id/fast_seek_index_txtv"
+                        android:layout_width="@dimen/dp_100"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/index_separator"
+                        android:background="@drawable/player_icon_fast_seekbar_index"
+                        android:gravity="center_horizontal"
+                        android:minWidth="@dimen/dp_100"
+                        android:paddingTop="@dimen/dp_5"
+                        android:text="00:00:00"
+                        android:textColor="@color/color_white"
+                        android:textSize="@dimen/sp_24" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </com.ucloud.uvod.example.ui.UBottomView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:id="@+id/loading_container"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/loading"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_200"
+            android:layout_centerInParent="true"
+            android:src="@drawable/player_loading" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:layout_below="@id/loading"
+            android:singleLine="true"
+            android:layout_margin="@dimen/dp_5"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/sp_25"
+            android:textColor="@color/color_white"
+            />
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/hud_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/ijk_transparent_dark"
+        android:visibility="invisible"
+        android:padding="8dp" />
 
 </com.ucloud.uvod.example.ui.UVideoMainView>

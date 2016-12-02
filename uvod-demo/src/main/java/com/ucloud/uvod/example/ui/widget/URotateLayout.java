@@ -9,7 +9,10 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-public class URotateLayout extends FrameLayout{
+/**
+ * Created by lw.tan on 2015/10/10.
+ */
+public class URotateLayout extends FrameLayout {
     public static final String TAG = "URotateLayout";
     public static final int ORIENTATION_PORTRAIT = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     public static final int ORIENTATION_LANDSCAPE = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;

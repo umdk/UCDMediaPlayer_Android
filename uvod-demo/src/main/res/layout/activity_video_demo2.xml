@@ -1,75 +1,58 @@
-<LinearLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/color_progress"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.ucloud.uvod.widget.v2.UVideoView
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/dp_20"
-        android:id="@+id/videoview"
-        android:layout_width="320dip"
-        android:layout_height="240dip" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:text="Toggle Ratio"
-        android:onClick="toggleRatio"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <!-- The main content view -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:text="toggle definition:"
-        android:layout_height="wrap_content" />
-    <RadioGroup
-        android:id="@+id/definition_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:text="@string/toggle_fhd_definition"
-            android:id="@+id/fhd_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="@string/toggle_shd_definition"
-            android:id="@+id/shd_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="@string/toggle_hd_definition"
-            android:id="@+id/hd_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:background="#0099cc">
 
-        <RadioButton
-            android:text="@string/toggle_sd_definition"
-            android:id="@+id/sd_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RadioGroup>
+        <com.ucloud.uvod.widget.UVideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
+        </com.ucloud.uvod.widget.UVideoView>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:text="toggle decoder:"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/toast_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:background="@color/ijk_transparent_dark"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
-    <RadioGroup
-        android:id="@+id/decoder_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:text="@string/toggle_hw_decoder"
-            android:id="@+id/hw_radio_button"
+        <TableLayout
+            android:id="@+id/hud_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="@string/toggle_sw_decoder"
-            android:id="@+id/sw_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RadioGroup>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@color/ijk_transparent_dark"
+            android:padding="8dp" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ijk_transparent_dark"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:context=".toolbar_widget" />
+    </FrameLayout>
+
+    <!-- The navigation drawer -->
+    <FrameLayout android:id="@+id/right_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@color/ijk_transparent_dark" />
+</android.support.v4.widget.DrawerLayout>

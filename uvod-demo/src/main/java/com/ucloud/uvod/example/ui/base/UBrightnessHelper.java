@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.WindowManager.LayoutParams;
 
+/**
+ * 
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public class UBrightnessHelper extends UBaseHelper {
 
 	public static int DEFAULT_MAX_BRIGHTNESS_VALUE = 100;
@@ -53,5 +58,4 @@ public class UBrightnessHelper extends UBaseHelper {
 		}
 		return DEFAULT_MAX_BRIGHTNESS_VALUE;
 	}
-
 }

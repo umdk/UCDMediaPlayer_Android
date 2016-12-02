@@ -2,6 +2,11 @@ package com.ucloud.uvod.example.ui.base;
 
 import android.content.Context;
 
+/**
+ * 
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public abstract class UBaseHelper {
 	public interface ChangeListener {
 		void onUpdateUI();

@@ -15,11 +15,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.ucloud.uvod.example.MainDemos"
+            android:name="com.ucloud.uvod.example.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="sensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name="com.ucloud.uvod.example.impl.Demo1"
+            android:name="com.ucloud.uvod.example.impl.UEasyPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -36,7 +36,7 @@
             android:theme="@style/FullscreenTheme" >
 
             <intent-filter>
-                <action android:name="ucloud.intent.action.uvod.example.demo1" />
+                <action android:name="ucloud.intent.action.uvod.example.easyplayer" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -52,29 +52,20 @@
         </activity>
 
         <activity
-            android:name="com.ucloud.uvod.example.impl.Demo2"
+            android:name="com.ucloud.uvod.example.impl.UVideoViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:screenOrientation="sensor"
             android:theme="@style/FullscreenTheme" >
 
             <intent-filter>
-                <action android:name="ucloud.intent.action.uvod.example.demo2" />
+                <action android:name="ucloud.intent.action.uvod.example.uvideoview" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
         </activity>
 
-        <uses-library android:name="android.test.runner" />
-
-        <activity
-            android:name="com.ucloud.uvod.example.preference.SettingsActivity"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
-        </activity>
     </application>
 
 </manifest>

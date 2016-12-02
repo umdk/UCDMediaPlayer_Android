@@ -11,7 +11,11 @@ import com.ucloud.uvod.example.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
+/**
+ *
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public class UTopView extends RelativeLayout {
 	private Callback mCallabck;
 	

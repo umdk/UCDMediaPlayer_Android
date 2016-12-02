@@ -5,12 +5,18 @@
     tools:context=".menu_app">
     <item
         android:id="@+id/action_toggle_render"
-        android:title="@string/toggle_render"
-        android:icon="@drawable/player_ic_action_dark_filter"
+        android:title="Toggle Render"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_toggle_ratio"
-        android:title="@string/toggle_ratio"
-        android:icon="@drawable/player_ic_action_dark_aspect_ratio"
+        android:title="Toggle Ratio"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_show_info"
+        android:title="Info"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_show_tracks"
+        android:title="Tracks"
         app:showAsAction="ifRoom" />
 </menu>

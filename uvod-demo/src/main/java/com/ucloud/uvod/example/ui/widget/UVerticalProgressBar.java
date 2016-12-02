@@ -8,9 +8,13 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
-import com.ucloud.uvod.common.util.SystemUtil;
+import com.ucloud.uvod.example.R;
 
-
+/**
+ * 
+ * Created by lw.tan on 2015/10/10.
+ *
+ */
 public class UVerticalProgressBar extends ProgressBar {
     private int mBarWidth;
     private int mBarHeight;
@@ -32,8 +36,8 @@ public class UVerticalProgressBar extends ProgressBar {
 
    
     private void init() {
-        mBarWidth = getResources().getDimensionPixelSize(SystemUtil.getResourceIdByName(getContext(), "dimen", "volume_vertical_progress_width"));
-        mBarHeight = getResources().getDimensionPixelSize(SystemUtil.getResourceIdByName(getContext(), "dimen", "vs_progressbar_height"));
+        mBarWidth = getResources().getDimensionPixelSize(R.dimen.volume_vertical_progress_width);
+        mBarHeight = getResources().getDimensionPixelSize(R.dimen.vs_progressbar_height);
     }
 
     public void setOrientation(boolean horizontal) {

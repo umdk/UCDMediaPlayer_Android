@@ -2,17 +2,27 @@ package com.ucloud.uvod.example.ui.widget;
 
 
 import android.content.Context;
-import android.content.res.Configuration;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.TableLayout;
 
-import com.ucloud.uvod.api.UVideoInfo;
-import com.ucloud.uvod.widget.v2.UVideoView;
 
-import java.util.List;
+import com.ucloud.uvod.UMediaProfile;
+import com.ucloud.uvod.UMediaPlayer;
+import com.ucloud.uvod.UPlayerStateListener;
+import com.ucloud.uvod.IMediaController;
+import com.ucloud.uvod.widget.UVideoView;
 
+import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+
+
+/**
+ * Created by lw.tan on 2015/10/10.
+ */
 public class URotateVideoView extends URotateLayout {
-    public static final String TAG = "URotateVideoView";
 
     private UVideoView mVideoView;
 
@@ -32,152 +42,178 @@ public class URotateVideoView extends URotateLayout {
     }
 
     private void init(Context context) {
-        LayoutParams mLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         mLayoutParams.gravity = Gravity.CENTER;
         mVideoView = new UVideoView(context);
         mVideoView.setLayoutParams(mLayoutParams);
         addView(mVideoView);
     }
 
-    /**video player method**/
+    public void onPause() {
+        mVideoView.onPause();
+    }
 
-    /**
-     * Sets video path.
-     *
-     * @param path the path of the video.
-     */
+    public void onResume() {
+        mVideoView.onResume();
+    }
+
+    public void onDestroy() {
+        mVideoView.onDestroy();
+    }
+
     public void setVideoPath(String path) {
-        if(mVideoView != null) mVideoView.setVideoPath(path);
+        mVideoView.setVideoPath(path);
     }
 
-    public void release(boolean cleartargetstate) {
-        if (mVideoView != null) mVideoView.release(cleartargetstate);
+    public void setVideoURI(Uri uri) {
+        mVideoView.setVideoURI(uri);
     }
 
-    public void start() {
-        if (mVideoView != null) mVideoView.start();
+    public void stopPlayback() {
+        mVideoView.stopPlayback();
     }
 
-    public void pause() {
-        if (mVideoView != null) mVideoView.pause();
+    public void setMediaController(IMediaController controller) {
+        mVideoView.setMediaController(controller);
     }
 
-    public void suspend() {
-        if (mVideoView != null) mVideoView.suspend();
+    public void setOnPreparedListener(UMediaPlayer.OnPreparedListener l) {
+        mVideoView.setOnPreparedListener(l);
     }
 
-    public void resume() {
-        if (mVideoView != null) mVideoView.resume();
+    public void setOnCompletionListener(UMediaPlayer.OnCompletionListener l) {
+        mVideoView.setOnCompletionListener(l);
     }
 
-    public int getDuration() {
-        if (mVideoView != null) return mVideoView.getDuration();
-        return 0;
+    public void setOnErrorListener(UMediaPlayer.OnErrorListener l) {
+        mVideoView.setOnErrorListener(l);
     }
 
-    public int getCurrentPosition() {
-        if (mVideoView != null) return mVideoView.getCurrentPosition();
-        return 0;
-    }
-
-    public void seekTo(int msec) {
-        if (mVideoView != null) mVideoView.seekTo(msec);
-    }
-
-    public boolean isPlaying() {
-        if (mVideoView != null) return mVideoView.isPlaying();
-        return false;
-    }
-
-    public int getBufferPercentage() {
-        if (mVideoView != null) return mVideoView.getBufferPercentage();
-        return 0;
-    }
-
-    public boolean isInPlaybackState() {
-        if (mVideoView != null) return mVideoView.isInPlaybackState();
-        return false;
-    }
-
-    public boolean canPause() {
-        if (mVideoView != null) return mVideoView.canPause();
-        return false;
-    }
-
-    public boolean canSeekBackward() {
-        if (mVideoView != null) return mVideoView.canSeekBackward();
-        return false;
-    }
-
-    public boolean canSeekForward() {
-        if (mVideoView != null) return mVideoView.canSeekForward();
-        return false;
-    }
-
-    public int getAudioSessionId() {
-        if (mVideoView != null) return mVideoView.getAudioSessionId();
-        return -1;
+    public void setOnInfoListener(UMediaPlayer.OnInfoListener l) {
+        mVideoView.setOnInfoListener(l);
     }
 
     public void releaseWithoutStop() {
-        if (mVideoView != null) mVideoView.releaseWithoutStop();
+        mVideoView.releaseWithoutStop();
     }
 
-    public void setRatio(int ratio) {
-        if (mVideoView !=null) mVideoView.setRatio(ratio);
+    public void release(boolean cleartargetstate) {
+        mVideoView.release(cleartargetstate);
     }
 
-    public void setHistoryOffset(int historyOffset) {
-        if (mVideoView !=null) mVideoView.setHistoryOffset(historyOffset);
+    public void start() {
+        mVideoView.start();
     }
 
-    public void registerCallabck(UVideoView.Callback mCallback) {
-        if (mVideoView !=null) mVideoView.registerCallback(mCallback);
+    public void pause() {
+        mVideoView.pause();
     }
 
-    public int getRatio() {
-        if (mVideoView != null) return mVideoView.getRatio();
-        return 0;
+    public int getDuration() {
+        return mVideoView.getDuration();
     }
 
-    public void stopPlayback(boolean flag) {
-        if (mVideoView != null) mVideoView.stopPlayback(flag);
+    public int getCurrentPosition() {
+        return mVideoView.getCurrentPosition();
     }
 
-    public void setDecoder(int decoder) {
-        mVideoView.setDecoder(decoder);
+    public void seekTo(int msec) {
+        mVideoView.seekTo(msec);
     }
 
-    public int getDecoder() {
-        return mVideoView.getDecoder();
+    public boolean isPlaying() {
+        return mVideoView.isPlaying();
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    public int getBufferPercentage() {
+        return mVideoView.getBufferPercentage();
     }
 
-    /**
-     * must call after start
-     * @return
-     */
-    public List<UVideoView.DefinitionType> getDefinitions() {
-        return mVideoView.getDefinitions();
+    public boolean isInPlaybackState() {
+        return mVideoView.isInPlaybackState();
     }
 
-    public void toggleDefinition(UVideoView.DefinitionType targetDefinition) {
-        mVideoView.toggleDefinition(targetDefinition);
+    public boolean canPause() {
+        return mVideoView.canPause();
     }
 
-
-    public void toggleDecoder(int decoder) {
-        mVideoView.toggleDecoder(decoder);
+    public boolean canSeekBackward() {
+        return mVideoView.canSeekBackward();
     }
 
-    public UVideoView.DefinitionType getDefaultDefinition() {
-        return mVideoView.getDefaultDefinition();
+    public boolean canSeekForward() {
+        return mVideoView.canSeekForward();
     }
 
-    public void setVideoInfo(UVideoInfo videoInfo) {
-       mVideoView.setVideoInfo(videoInfo);
+    public int getAudioSessionId() {
+        return mVideoView.getAudioSessionId();
+    }
+
+    public int toggleAspectRatio() {
+        return mVideoView.toggleAspectRatio();
+    }
+
+    public int toggleRender() {
+        return mVideoView.toggleRender();
+    }
+
+    public void setOnPlayerStateListener(UPlayerStateListener listener) {
+        mVideoView.setOnPlayerStateListener(listener);
+    }
+
+    public void setMediaPorfile(UMediaProfile mediaProfile) {
+        mVideoView.setMediaPorfile(mediaProfile);
+    }
+
+    public UMediaProfile getMediaProfile() {
+        return mVideoView.getMediaProfile();
+    }
+
+    public int getSelectedTrack(int trackType) {
+        return mVideoView.getSelectedTrack(trackType);
+    }
+
+    public void deselectTrack(int stream) {
+        mVideoView.deselectTrack(stream);
+    }
+
+    public void selectTrack(int stream) {
+        mVideoView.selectTrack(stream);
+    }
+
+    public ITrackInfo[] getTrackInfo() {
+        return mVideoView.getTrackInfo();
+    }
+
+    public void showMediaInfo() {
+        mVideoView.showMediaInfo();
+    }
+
+    public void stopBackgroundPlay() {
+        mVideoView.stopBackgroundPlay();
+    }
+
+    public void enterBackground() {
+        mVideoView.enterBackground();
+    }
+
+    public boolean isBackgroundPlayEnabled() {
+        return mVideoView.isBackgroundPlayEnabled();
+    }
+
+    public int applyAspectRatio(int ratio) {
+        return mVideoView.applyAspectRatio(ratio);
+    }
+
+    public void setHudView(TableLayout hudView) {
+        mVideoView.setHudView(hudView);
+    }
+
+    public UVideoView getVideoView() {
+        return mVideoView;
+    }
+
+    public boolean isLiveStreaming() {
+        return mVideoView.isLiveStreaming();
     }
 }
