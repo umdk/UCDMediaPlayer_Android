@@ -382,7 +382,7 @@
             android:layout_height="wrap_content"
             android:text="@string/loading"
             android:layout_below="@id/loading"
-            android:singleLine="true"
+            android:maxLines="1"
             android:layout_margin="@dimen/dp_5"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/sp_25"
@@ -395,7 +395,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/ijk_transparent_dark"
+        android:background="@color/transparent_dark"
         android:visibility="invisible"
         android:padding="8dp" />
 

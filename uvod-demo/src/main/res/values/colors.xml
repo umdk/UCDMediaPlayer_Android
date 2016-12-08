@@ -1,34 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="color_white_alpha_half">#7fffffff</color>
     <color name="color_white">#ffeeeeee</color>
-    <color name="color_white_charactor_color">#FFFFFFFF</color>
-    <color name="color_red_charactor_show">#FF0000</color>
     <color name="color_white_alpha_alpha40">#66ffffff</color>
     <color name="color_progress_bg">#26ffffff</color>
     <color name="color_progress">#ff00a0e9</color>
     <color name="color_secondprogress_gray">#ff9a9a9a</color>
-    <color name="color_video_view_bg">#00000000</color>
-	<color name="color_input_tips">#ffb3b3b3</color>
 	<color name="color_transparent">#000000</color>
-	<color name="transparent">#00000000</color>
 	<color name="color_setting_menu_bg">#A0000000</color>
 	<color name="color_setting_menu_content_bg">#B0000000</color>
-	<color name="color_setting_menu_item_selected">#B1000000</color>
-    <color name="black_overlay">#66000000</color>
 
-    <color name="ijk_color_blue_main">@color/ijk_color_blue_500</color>
-    <color name="ijk_color_blue_50">#E3F2FD</color>
-    <color name="ijk_color_blue_100">#BBDEFB</color>
-    <color name="ijk_color_blue_200">#90CAF9</color>
-    <color name="ijk_color_blue_300">#64B5F6</color>
-    <color name="ijk_color_blue_400">#42A5F5</color>
-    <color name="ijk_color_blue_500">#2196F3</color>
-    <color name="ijk_color_blue_600">#1E88E5</color>
-    <color name="ijk_color_blue_700">#1976D2</color>
-    <color name="ijk_color_blue_800">#1565C0</color>
-    <color name="ijk_color_blue_900">#0D47A1</color>
+    <color name="transparent_dark">#77000000</color>
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="gray">#666666</color>
 
-    <color name="ijk_transparent_dark">#77000000</color>
+    <color name="blue">#2196F3</color>
+    <color name="dark_blue">#1976D2</color>
+    <color name="accent_blue">#448AFF</color>
 </resources>

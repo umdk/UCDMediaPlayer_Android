@@ -20,7 +20,7 @@ import com.ucloud.uvod.example.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+import merge.tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 import com.ucloud.uvod.example.ui.AndroidMediaController;
 import com.ucloud.uvod.example.ui.TracksFragment;
@@ -67,7 +67,7 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 		profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1));
 		profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0));
 		profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0));
-		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, 1);
+		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
 
 		mVideoView.setMediaPorfile(profile);
 

@@ -18,7 +18,7 @@ import com.ucloud.uvod.example.R;
 
 import java.util.Locale;
 
-import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+import merge.tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 public class TracksFragment extends Fragment {
     private ListView mTrackListView;

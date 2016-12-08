@@ -174,8 +174,8 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 	@Override
 	public void onPlayerError(Error error, int extra1, Object extra2) {
 		switch (error) {
-			case IO:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError IO.");
+			case IOERROR:
+				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError IOERROR.");
 				break;
 			case PREPARE_TIMEOUT://just a warn
 				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError PREPARE_TIMEOUT.");

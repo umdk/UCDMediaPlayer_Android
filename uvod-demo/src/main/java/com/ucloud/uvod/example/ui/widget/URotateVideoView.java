@@ -3,7 +3,6 @@ package com.ucloud.uvod.example.ui.widget;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -16,7 +15,7 @@ import com.ucloud.uvod.UPlayerStateListener;
 import com.ucloud.uvod.IMediaController;
 import com.ucloud.uvod.widget.UVideoView;
 
-import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+import merge.tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 
 /**

@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
-            android:background="@color/ijk_transparent_dark"
+            android:background="@color/transparent_dark"
             android:padding="16dp"
             android:textSize="16sp"
             android:visibility="gone" />
@@ -35,14 +35,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
-            android:background="@color/ijk_transparent_dark"
+            android:background="@color/transparent_dark"
             android:padding="8dp" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ijk_transparent_dark"
+            android:background="@color/transparent_dark"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -54,5 +54,5 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:background="@color/ijk_transparent_dark" />
+        android:background="@color/transparent_dark" />
 </android.support.v4.widget.DrawerLayout>

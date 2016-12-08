@@ -18,12 +18,6 @@
         <item name="android:paddingRight">16dip</item>
     </style>
 
-    <style name="MediaController_Text">
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="MediaDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowBackground">@null</item>
         <item name="android:layout_width">wrap_content</item>
@@ -44,6 +38,12 @@
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="BlueTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/dark_blue</item>
+        <item name="colorAccent">@color/accent_blue</item>
     </style>
 
 </resources>

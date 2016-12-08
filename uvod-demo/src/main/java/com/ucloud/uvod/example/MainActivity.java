@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 		listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, demoNames));
 		listView.setOnItemClickListener(this);
 		demoDirects = getResources().getStringArray(R.array.demoDirects);
-		versionTxtv.setText(UBuild.VERSION);
+		versionTxtv.setText(UBuild.VERSION + " " + getResources().getString(R.string.sdk_address));
 	}
 
 	@Override
