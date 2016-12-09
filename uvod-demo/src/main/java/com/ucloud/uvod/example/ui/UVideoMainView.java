@@ -3,6 +3,7 @@ package com.ucloud.uvod.example.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
@@ -782,7 +783,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         uiHandler.sendMessage(msg);
     }
 
-    public void applyAspectRatio(int ratio) {
+    public void initAspectRatio(int ratio) {
         mRatio = ratio;
     }
 

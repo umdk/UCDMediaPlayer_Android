@@ -64,14 +64,14 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
 		mEasyPlayer.setMediaProfile(profile);
 		mEasyPlayer.setScreenOriention(UEasyPlayer.SCREEN_ORIENTATION_SENSOR);
-		mEasyPlayer.applyAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
 		mEasyPlayer.setPlayerStateLisnter(this);
 		mEasyPlayer.setOnSettingMenuItemSelectedListener(this);
 
 		if(getIntent().getIntExtra(MainActivity.KEY_SHOW_DEBUG_INFO, 1) == 1) {
 			mEasyPlayer.setHudView(mHudView);
 		}
-
+		mEasyPlayer.initAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
+		//init before setVideoPath VIDEO_RATIO_FILL_PARENT or VIDEO_RATIO_16_9_FIT_PARENT VIDEO_RATIO_4_3_FIT_PARENT VIDEO_RATIO_WRAP_CONTENT ...
 		mEasyPlayer.setVideoPath(mUri);
 
 		mUri = Uri.decode(mUri);

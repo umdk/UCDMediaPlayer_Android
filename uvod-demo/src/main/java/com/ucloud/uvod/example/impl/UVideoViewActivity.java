@@ -13,8 +13,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ucloud.uvod.UMediaProfile;
+import com.ucloud.uvod.UPlayerStateListener;
 import com.ucloud.uvod.example.MainActivity;
 import com.ucloud.uvod.example.R;
 
@@ -29,7 +31,7 @@ import com.ucloud.uvod.widget.UVideoView;
 /**
  * Created by lw.tan on 2015/10/10.
  */
-public class UVideoViewActivity extends AppCompatActivity implements TracksFragment.ITrackHolder{
+public class UVideoViewActivity extends AppCompatActivity implements TracksFragment.ITrackHolder, UPlayerStateListener {
 
 	@Bind(R.id.video_view)
 	UVideoView mVideoView;
@@ -83,6 +85,7 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 		if(getIntent().getIntExtra(MainActivity.KEY_SHOW_DEBUG_INFO, 1) == 1) {
 			mVideoView.setHudView(mHudView);
 		}
+		mVideoView.setOnPlayerStateListener(this);
 		mVideoView.setVideoPath(mUri);
 	}
 
@@ -182,5 +185,50 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 			return -1;
 
 		return mVideoView.getSelectedTrack(trackType);
+	}
+
+	@Override
+	public void onPlayerStateChanged(UPlayerStateListener.State state, int extra1, Object extra2) {
+		switch (state) {
+			case PREPARING:
+				break;
+			case PREPARED:
+				break;
+			case START:
+				mVideoView.applyAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);//set after start or after setVideoPath
+				break;
+			case VIDEO_SIZE_CHANGED:
+				break;
+			case COMPLETED:
+				break;
+		}
+	}
+
+	@Override
+	public void onPlayerInfo(UPlayerStateListener.Info info, int extra1, Object extra2) {
+		switch (info) {
+			case BUFFERING_START:
+				break;
+			case BUFFERING_END:
+				break;
+			case BUFFERING_UPDATE:
+				break;
+		}
+	}
+
+	@Override
+	public void onPlayerError(UPlayerStateListener.Error error, int extra1, Object extra2) {
+		switch (error) {
+			case IOERROR:
+				Toast.makeText(this, "Error: " + extra1, Toast.LENGTH_SHORT).show();
+				break;
+			case PREPARE_TIMEOUT:
+				break;
+			case READ_FRAME_TIMEOUT:
+				break;
+			case UNKNOWN:
+				Toast.makeText(this, "Error: " + extra1, Toast.LENGTH_SHORT).show();
+				break;
+		}
 	}
 }

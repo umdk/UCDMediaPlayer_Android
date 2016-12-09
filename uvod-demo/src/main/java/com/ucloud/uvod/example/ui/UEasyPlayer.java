@@ -60,7 +60,7 @@ public interface UEasyPlayer {
 
 	void setMediaProfile(UMediaProfile profile);
 
-	void applyAspectRatio(int ratio);
+	void initAspectRatio(int ratio);
 
 	UVideoView getVideoView();
 
