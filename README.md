@@ -89,18 +89,18 @@ UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
 
 打开 Android Studio 菜单 File -> New -> Import Module，选择并指向 SDK 解压目录下的 uvod-android-sdk 目录，然后点击 finish。
 
-在 settings.gradle 添加以下代码：
-
-```
-include ':uvod-android-sdk'
-```
-
 在 build.gradle 添加以下代码：
 
 ```
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     ...
-    compile project(':uvod-android-sdk')
+    compile(name:'uvod-android-sdk-1.5.3', ext:'aar')
     ...
 }
 ```
@@ -257,6 +257,11 @@ UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 
 <a name="7"></a>
 # 7 版本历史
+
+* v1.5.3 (2016.12.16)
+    - 支持https
+    - 修改UPlayerStateListener错误回调接口到UI线程
+    - 支持aar包
 
 * v1.5.1 (2016.12.07)
     - 针对直播延时优化

@@ -19,7 +19,6 @@ public class UMenuItem implements Parcelable {
 
 	public List<UMenuItem> childs;
 
-
 	private UMenuItem(Builder builder) {
 		this.title = builder.title;
 		this.description = builder.description;
@@ -38,6 +37,10 @@ public class UMenuItem implements Parcelable {
 		defaultSelected = in.readInt();
 		isVisible = in.readByte() != 0;
 		childs = in.createTypedArrayList(UMenuItem.CREATOR);
+	}
+
+	public void defaultSelected(int defaultSelected) {
+		this.defaultSelected = defaultSelected;
 	}
 
 	public static final Creator<UMenuItem> CREATOR = new Creator<UMenuItem>() {

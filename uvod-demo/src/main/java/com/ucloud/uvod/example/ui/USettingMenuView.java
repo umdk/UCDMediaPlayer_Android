@@ -21,6 +21,9 @@ import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.ucloud.uvod.example.ui.UVideoMainView.TAG;
+
 /**
  *
  * Created by lw.tan on 2015/10/10.
@@ -112,7 +115,7 @@ public class USettingMenuView extends LinearLayout {
 									int position, long id) {
 				UMenuItem menuItem = mMainMenuItem.childs.get(mMainMenuItem.defaultSelected);
 				UMenuItem contentMenuItem = menuItem.childs.get(position);
-				if (menuItem.defaultSelected != position) {
+				if (menuItem.defaultSelected != Integer.parseInt(contentMenuItem.type)) {
 					menuItem.defaultSelected = position;
 					mMenuSettingContentAdapter.notifyDataSetChanged();
 					mMenuSettingAdapter.notifyDataSetChanged();
@@ -153,7 +156,7 @@ public class USettingMenuView extends LinearLayout {
 			UMenuItem item = mMainMenuItem.childs.get(position);
 			if (item != null) {
 				titleTxtv.setText(item.title);
-				if (item.defaultSelected >=0 && item.defaultSelected <= item.childs.size() - 1) {
+				if (item.defaultSelected >= 0 && item.defaultSelected <= item.childs.size() - 1) {
 					descriptionTxtv.setText(item.childs.get(item.defaultSelected).title);
 				} else {
 					if (item.childs != null && item.childs.size() >= 1) {

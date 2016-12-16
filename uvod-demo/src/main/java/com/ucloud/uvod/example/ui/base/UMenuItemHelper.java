@@ -9,14 +9,12 @@ import com.ucloud.uvod.example.R;
  * Created by lw.tan on 2015/8/11.
  */
 public class UMenuItemHelper {
-    private static final String TAG = "UMenuItemHelper";
     private static UMenuItem mMainMenuItem;
     private static UMenuItemHelper instance;
     private static Context mContext;
     private UMenuItemHelper(Context context) {
         mContext = context;
         mMainMenuItem = new UMenuItem.Builder().title(mContext.getResources().getString(R.string.menu_main_title))
-                .index(0)
                 .builder();
     }
 
@@ -29,15 +27,6 @@ public class UMenuItemHelper {
             }
         }
         return instance;
-    }
-
-    private String get(String[] names, String types[], String type) {
-        for(int i =0; i < types.length; i++) {
-            if (type.equalsIgnoreCase(types[i])) {
-                return names[i];
-            }
-        }
-        return type;
     }
 
     public UMenuItem buildVideoPlayerMenuItem(int defaultSelect) {
@@ -67,22 +56,15 @@ public class UMenuItemHelper {
     }
 
     public UMenuItem register(UMenuItem child) {
+       return register(child, false);
+    }
+
+    public UMenuItem register(UMenuItem child, boolean isDefaultSelected) {
         if (mMainMenuItem != null && !mMainMenuItem.childs.contains(child)) {
             mMainMenuItem.childs.add(child);
-        }
-        return mMainMenuItem;
-    }
-
-    public UMenuItem register(UMenuItem child, int location) {
-        if (mMainMenuItem != null && !mMainMenuItem.childs.contains(child)) {
-            mMainMenuItem.childs.add(location, child);
-        }
-        return mMainMenuItem;
-    }
-
-    public UMenuItem unRegister(UMenuItem child) {
-        if (mMainMenuItem != null && mMainMenuItem.childs.contains(child)) {
-            mMainMenuItem.childs.remove(child);
+            if (isDefaultSelected) {
+                mMainMenuItem.defaultSelected =  mMainMenuItem.childs.size() - 1;
+            }
         }
         return mMainMenuItem;
     }

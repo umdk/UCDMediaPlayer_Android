@@ -227,10 +227,10 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     public void setVideoPath(String uri) {
         mUri = uri;
         mRotateVideoView.setOnPlayerStateListener(mPlayerStateLisnter);
-        mRotateVideoView.applyAspectRatio(mRatio);
         mRotateVideoView.setMediaPorfile(avProfile);
         mRotateVideoView.setHudView(mHudView);
         mRotateVideoView.setVideoPath(mUri);
+        mRotateVideoView.applyAspectRatio(mRatio);
     }
 
     UPlayerStateListener mPlayerStateLisnter = new UPlayerStateListener() {
@@ -626,7 +626,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         if (!isInitSettingMenu) {
             UMenuItemHelper menuItemHelper = UMenuItemHelper.getInstance(getContext());
             menuItemHelper.release();
-            menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoRatioMenuItem(mRatio));
+            menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoRatioMenuItem(mRatio), true);
             menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoPlayerMenuItem(avProfile.getInteger(UMediaProfile.KEY_MEDIACODEC, 0)));
             mSettingMenuView.init();
             mSettingMenuView.setOnMenuItemSelectedListener(this);
