@@ -74,12 +74,16 @@ UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
 <a name="4"></a>
 # 4 快速开始
 
-您可以选择以下两种开始方式，直接运行Demo源码，或者集成SDK到已有项目。
+先下载 Git 源码，然后您可以选择以下两种开始方式，直接运行Demo源码，或者集成SDK到已有项目。
+
+```
+git clone https://github.com/umdk/UCDMediaPlayer_Android.git
+```
 
 <a name="4.1"></a>
 ## 4.1 运行Demo源码
 
-打开 Android Studio 菜单 File -> New -> Import Project，选择并指向 SDK 的解压目录，然后点击 OK。若出现库找不到编译失败，更新相应的 SDK 即可。
+打开 Android Studio 菜单 File -> New -> Import Project，选择并指向 git 目录，然后点击 OK 即可。
 
 <a name="4.2"></a>
 ## 4.2 项目集成 SDK
@@ -87,7 +91,7 @@ UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
 <a name="4.2.1"></a>
 ### step 1: 导入 SDK 库，并添加依赖
 
-打开 Android Studio 菜单 File -> New -> Import Module，选择并指向 SDK 解压目录下的 uvod-android-sdk 目录，然后点击 finish。
+在已有项目的根目录下新建libs文件夹，并添加 uvod-android-sdk-1.5.3.aar 包(在 git 目录uvod-demo/libs/路径下)。
 
 在 build.gradle 添加以下代码：
 
@@ -179,10 +183,10 @@ mVideoView.start();
 <a name="5.1"></a>
 ## 状态获取
 
-如果您希望获取 SDK 内部状态，您可以通过注册 UVideoView.Callback 回调来获取：
+如果您希望获取 SDK 内部状态，您可以通过向 UVideoView 对象设置 Listener 来获取，目前我们支持以下状态的获取：
 
 ```
-mVideoView.registerCallback(this);
+mVideoView.setOnPlayerStateListener(this);
 ```
 
 - 播放状态返回
