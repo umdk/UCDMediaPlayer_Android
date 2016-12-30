@@ -64,6 +64,10 @@ public class URotateVideoView extends URotateLayout {
         mVideoView.setVideoPath(path);
     }
 
+    public void setVideoPath(String path, int position) {
+        mVideoView.setVideoPath(path, position);
+    }
+
     public void setVideoURI(Uri uri) {
         mVideoView.setVideoURI(uri);
     }

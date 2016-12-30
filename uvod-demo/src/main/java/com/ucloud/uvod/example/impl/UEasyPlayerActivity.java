@@ -53,6 +53,7 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		String intentAction = getIntent().getAction();
 		if (!TextUtils.isEmpty(intentAction) && intentAction.equals(Intent.ACTION_VIEW)) {
 			mUri = getIntent().getDataString();
+			mUri = Uri.decode(mUri);
 		}
 
 		mEasyPlayer.init(this);
@@ -72,9 +73,9 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		}
 		mEasyPlayer.initAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
 		//init before setVideoPath VIDEO_RATIO_FILL_PARENT or VIDEO_RATIO_16_9_FIT_PARENT VIDEO_RATIO_4_3_FIT_PARENT VIDEO_RATIO_WRAP_CONTENT ...
+
 		mEasyPlayer.setVideoPath(mUri);
 
-		mUri = Uri.decode(mUri);
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(1000);
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);

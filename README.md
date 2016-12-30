@@ -262,6 +262,9 @@ UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 <a name="7"></a>
 # 7 版本历史
 
+* v1.5.4 (2016.12.30)
+    - 增加UVideoView.setVideoPath(String uri, int position)方法
+
 * v1.5.3 (2016.12.16)
     - 支持https
     - 修改UPlayerStateListener错误回调接口到UI线程

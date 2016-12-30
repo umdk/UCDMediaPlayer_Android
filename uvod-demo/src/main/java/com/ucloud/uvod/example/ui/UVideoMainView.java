@@ -3,7 +3,6 @@ package com.ucloud.uvod.example.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
@@ -19,8 +18,10 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
+
 import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
+import com.ucloud.uvod.common.Utils;
 import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.base.UBrightnessHelper;
 import com.ucloud.uvod.example.ui.base.UMenuItem;
@@ -28,7 +29,6 @@ import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
 import com.ucloud.uvod.example.ui.base.UVolumeHelper;
 import com.ucloud.uvod.example.ui.widget.URotateVideoView;
 import com.ucloud.uvod.example.ui.widget.UVerticalProgressView;
-import com.ucloud.uvod.common.Utils;
 import com.ucloud.uvod.widget.UVideoView;
 
 import butterknife.Bind;
@@ -109,6 +109,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     private UMediaProfile avProfile;
 
     private boolean isPausedByManual = false;
+
+    private int mSeekWhenPrepared = 0;
 
     @SuppressLint("HandlerLeak")
     private Handler uiHandler = new Handler() {
@@ -243,6 +245,9 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 case PREPARED:
                     notifyHideLoadingView(0);
                     dealOnPrepared();
+                    if (mRotateVideoView != null && mSeekWhenPrepared >= 0) {
+                        mRotateVideoView.seekTo(mSeekWhenPrepared);
+                    }
                     break;
                 case START:
                     mPlayStatusView.setVisibility(View.GONE);
@@ -726,6 +731,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     public void onDestroy() {
         UMenuItemHelper.getInstance(getContext()).release();
         mRotateVideoView.onDestroy();
+        mSeekWhenPrepared = 0;
     }
 
     private void notifyShowLoadingView(int duration) {
@@ -814,6 +820,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     mRotateVideoView.applyAspectRatio(Integer.parseInt(item.type));
                 } else if (item.parent != null && item.parent.title.equals(mContext.getResources().getString(R.string.menu_item_title_videocodec))) {
                    notifyShowLoadingView(0);
+                   mSeekWhenPrepared = mRotateVideoView.getCurrentPosition();
                    mRotateVideoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                    mRotateVideoView.setVideoPath(mUri);
                }
