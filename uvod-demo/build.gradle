@@ -31,6 +31,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:preference-v7:24.2.1'
-    compile(name:'uvod-android-sdk-1.5.4', ext:'aar')
+    compile(name:'uvod-android-sdk-1.5.5', ext:'aar')
     compile 'com.jakewharton:butterknife:7.0.1'
 }

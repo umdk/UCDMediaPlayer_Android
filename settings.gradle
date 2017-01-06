@@ -1,1 +1,1 @@
-include ':uvod-demo',':uvod-android-sdk'
+include ':uvod-demo'
