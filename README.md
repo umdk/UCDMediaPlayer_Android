@@ -55,4 +55,4 @@ UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 [2]: https://github.com/umdk/UCDMediaPlayer_Android/wiki
 [3]: https://github.com/umdk/UCDMediaPlayer_Android/issues
 [4]: mailto:sdk_spt@ucloud.cn
-[5]: https://github.com/umdk/UCDMediaPlayer/wiki/6-常见问题#6
+[5]: https://github.com/umdk/UCDMediaPlayer_Android/wiki/6-常见问题#6
