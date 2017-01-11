@@ -227,6 +227,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     };
 
     public void setVideoPath(String uri) {
+        mSeekWhenPrepared = 0;
         mUri = uri;
         mRotateVideoView.setOnPlayerStateListener(mPlayerStateLisnter);
         mRotateVideoView.setMediaPorfile(avProfile);
@@ -257,6 +258,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 case PAUSE:
                     break;
                 case COMPLETED:
+                    mSeekWhenPrepared = 0;
                     dealCompletion();
                     break;
                 case SEEK_END:
@@ -823,6 +825,13 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                    mSeekWhenPrepared = mRotateVideoView.getCurrentPosition();
                    mRotateVideoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                    mRotateVideoView.setVideoPath(mUri);
+               } else {
+                   //toggle source uri
+/*                   notifyShowLoadingView(0);
+                   mSeekWhenPrepared = mRotateVideoView.getCurrentPosition(); //get last play position?
+                   mSeekWhenPrepared = 0;//is reset by yourself
+                   mUri = "your new uri";
+                   mRotateVideoView.setVideoPath(mUri);*/
                }
                 notifyHideSettingMenuView(0);
             }
