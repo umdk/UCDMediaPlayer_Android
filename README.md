@@ -24,6 +24,10 @@ UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
 
 Android 2.3+ (API 9+)
 
+## 下载Apk，体验直播功能
+
+![uvod-demo](screenshot/uvod_demo_qrcode.png)  
+
 ## 使用方法
 
 请参考 wiki 文档：[UCDMediaPlayer 开发指南][2]
