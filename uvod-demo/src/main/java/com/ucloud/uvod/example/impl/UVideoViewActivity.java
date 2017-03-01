@@ -68,6 +68,9 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 		UMediaProfile profile = new UMediaProfile();
 		profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1));
 		profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0));
+		if (mUri != null && mUri.endsWith("m3u8")) {
+			profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0);// m3u8 默认不开启延时丢帧策略
+		}
 		profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0));
 		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
 

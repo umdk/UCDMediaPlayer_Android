@@ -63,6 +63,13 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0));  //  1 live streaming 0 vod streaming
 		profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0));
 		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
+
+		profile.setInteger(UMediaProfile.KEY_PREPARE_TIMEOUT, 1000 * 5);
+		profile.setInteger(UMediaProfile.KEY_MIN_READ_FRAME_TIMEOUT_RECONNECT_INTERVAL, 3);
+
+		profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 5);
+		profile.setInteger(UMediaProfile.KEY_MIN_PREPARE_TIMEOUT_RECONNECT_INTERVAL, 3);
+
 		mEasyPlayer.setMediaProfile(profile);
 		mEasyPlayer.setScreenOriention(UEasyPlayer.SCREEN_ORIENTATION_SENSOR);
 		mEasyPlayer.setPlayerStateLisnter(this);
@@ -133,27 +140,23 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 
 	@Override
 	public void onPlayerStateChanged(State state, int extra1, Object extra2) {
+		Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged " + state.name());
 		switch (state) {
 			case PREPARING:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged PREPARING.");
 				break;
 			case PREPARED:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged PREPARED.");
 				break;
 			case START:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged START.");
 				break;
 			case PAUSE:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged PAUSE.");
 				break;
 			case STOP:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged STOP.");
 				break;
 			case VIDEO_SIZE_CHANGED:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged VIDEO_SIZE_CHANGED.");
 				break;
 			case COMPLETED:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged COMPLETED.");
+				break;
+			case RECONNECT:
 				break;
 		}
 	}
