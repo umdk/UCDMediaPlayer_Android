@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.ucloud.uvod.example"
         minSdkVersion 9
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -14,6 +14,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ndk {
+                abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+            }
+        }
+
+        debug {
+            ndk {
+                abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+            }
         }
     }
     lintOptions {
@@ -29,8 +38,9 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:preference-v7:24.2.1'
-    compile(name:'uvod-android-sdk-1.5.7', ext:'aar')
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:preference-v7:25.2.0'
+    compile(name:'uvod-android-sdk-1.5.8', ext:'aar')
+    compile(name:'ucommon-android-sdk-1.0.0', ext:'aar')
     compile 'com.jakewharton:butterknife:7.0.1'
 }

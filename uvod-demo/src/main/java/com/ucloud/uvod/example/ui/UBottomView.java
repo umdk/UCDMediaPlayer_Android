@@ -12,8 +12,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.example.R;
-import com.ucloud.uvod.common.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

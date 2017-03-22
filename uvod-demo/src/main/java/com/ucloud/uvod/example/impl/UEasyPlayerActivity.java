@@ -70,6 +70,10 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 5);
 		profile.setInteger(UMediaProfile.KEY_MIN_PREPARE_TIMEOUT_RECONNECT_INTERVAL, 3);
 
+		if (mUri != null && mUri.endsWith("m3u8")) {
+			profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0);// m3u8 默认不开启延时丢帧策略
+		}
+
 		mEasyPlayer.setMediaProfile(profile);
 		mEasyPlayer.setScreenOriention(UEasyPlayer.SCREEN_ORIENTATION_SENSOR);
 		mEasyPlayer.setPlayerStateLisnter(this);
@@ -79,7 +83,7 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 			mEasyPlayer.setHudView(mHudView);
 		}
 		mEasyPlayer.initAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
-		//init before setVideoPath VIDEO_RATIO_FILL_PARENT or VIDEO_RATIO_16_9_FIT_PARENT VIDEO_RATIO_4_3_FIT_PARENT VIDEO_RATIO_WRAP_CONTENT ...
+		//open before setVideoPath VIDEO_RATIO_FILL_PARENT or VIDEO_RATIO_16_9_FIT_PARENT VIDEO_RATIO_4_3_FIT_PARENT VIDEO_RATIO_WRAP_CONTENT ...
 
 		mEasyPlayer.setVideoPath(mUri);
 

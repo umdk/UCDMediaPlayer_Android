@@ -19,9 +19,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
 
+import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
-import com.ucloud.uvod.common.Utils;
 import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.base.UBrightnessHelper;
 import com.ucloud.uvod.example.ui.base.UMenuItem;

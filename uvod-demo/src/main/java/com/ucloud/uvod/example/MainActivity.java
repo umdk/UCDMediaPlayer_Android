@@ -18,8 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.UBuild;
-import com.ucloud.uvod.common.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
