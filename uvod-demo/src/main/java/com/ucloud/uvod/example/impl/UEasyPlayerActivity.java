@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -47,6 +48,7 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
 		super.onCreate(bundles);
 		setContentView(R.layout.activity_video_demo1);
 		ButterKnife.bind(this);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		mUri = getIntent().getStringExtra(MainActivity.KEY_URI);
 

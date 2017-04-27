@@ -1,6 +1,7 @@
 package com.ucloud.uvod.example;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.UBuild;
+import com.ucloud.uvod.example.permission.PermissionsActivity;
+import com.ucloud.uvod.example.permission.PermissionsChecker;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -72,6 +75,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 	@Bind(R.id.cb_show_debug_info)
 	CheckBox showDebugInfoCb;
 
+	private static final int REQUEST_CODE = 200;
+	private PermissionsChecker mPermissionsChecker; //for android target version >=23
+	String[] permissions = new String[]{
+			Manifest.permission.WRITE_EXTERNAL_STORAGE
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,6 +94,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 		listView.setOnItemClickListener(this);
 		demoDirects = getResources().getStringArray(R.array.demoDirects);
 		versionTxtv.setText(UBuild.VERSION + " " + getResources().getString(R.string.sdk_address));
+		mPermissionsChecker = new PermissionsChecker(this);
+		if (mPermissionsChecker.lacksPermissions(permissions)) {
+			PermissionsActivity.startActivityForResult(this, REQUEST_CODE, permissions);
+		}
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.ucloud.uvod.example.impl;
 
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,14 +20,13 @@ import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
 import com.ucloud.uvod.example.MainActivity;
 import com.ucloud.uvod.example.R;
+import com.ucloud.uvod.example.ui.AndroidMediaController;
+import com.ucloud.uvod.example.ui.TracksFragment;
+import com.ucloud.uvod.widget.UVideoView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import merge.tv.danmaku.ijk.media.player.misc.ITrackInfo;
-
-import com.ucloud.uvod.example.ui.AndroidMediaController;
-import com.ucloud.uvod.example.ui.TracksFragment;
-import com.ucloud.uvod.widget.UVideoView;
 
 /**
  * Created by lw.tan on 2015/10/10.
@@ -62,6 +62,7 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 		super.onCreate(bundles);
 		setContentView(R.layout.activity_video_demo2);
 		ButterKnife.bind(this);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		mUri = getIntent().getStringExtra(MainActivity.KEY_URI);
 

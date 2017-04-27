@@ -59,7 +59,11 @@
             </intent-filter>
 
         </activity>
-
+        <activity
+                android:name="com.ucloud.uvod.example.permission.PermissionsActivity"
+                android:screenOrientation="portrait"
+                android:launchMode="singleTask"
+                android:theme="@style/BlueTheme"/>
     </application>
 
 </manifest>

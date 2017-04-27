@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
@@ -753,17 +752,17 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     private void doShowLoadingView() {
         if (mLoadingContainer != null && mLoadingContainer.getVisibility() == View.GONE && mLoadingView != null) {
             mLoadingContainer.setVisibility(View.VISIBLE);
-            RotateAnimation rotateAnimation = new RotateAnimation(0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-            rotateAnimation.setDuration(2000);
-            rotateAnimation.setRepeatMode(RotateAnimation.RESTART);
-            rotateAnimation.setRepeatCount(-1);
-            mLoadingView.startAnimation(rotateAnimation);
+//            RotateAnimation rotateAnimation = new RotateAnimation(0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+//            rotateAnimation.setDuration(2000);
+//            rotateAnimation.setRepeatMode(RotateAnimation.RESTART);
+//            rotateAnimation.setRepeatCount(-1);
+//            mLoadingView.startAnimation(rotateAnimation);
         }
     }
 
     private void doHideLoadingView(){
         if (mLoadingContainer != null && mLoadingView != null) {
-            mLoadingView.clearAnimation();
+//            mLoadingView.clearAnimation();
             mLoadingContainer.setVisibility(View.GONE);
         }
     }
