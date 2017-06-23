@@ -27,7 +27,7 @@ public class PermissionsActivity extends AppCompatActivity {
 
     private static final String PACKAGE_URL_SCHEME = "package:";
 
-    private PermissionsChecker mChecker;
+    private PermissionsChecker permissionsChecker;
 
     private boolean isRequireCheck;
 
@@ -49,7 +49,7 @@ public class PermissionsActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_permissions);
 
-        mChecker = new PermissionsChecker(this);
+        permissionsChecker = new PermissionsChecker(this);
         isRequireCheck = true;
     }
 
@@ -58,12 +58,14 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onResume();
         if (isRequireCheck) {
             String[] permissions = getPermissions();
-            if (mChecker.lacksPermissions(permissions)) {
+            if (permissionsChecker.lacksPermissions(permissions)) {
                 requestPermissions(permissions);
-            } else {
+            }
+            else {
                 allPermissionsGranted();
             }
-        } else {
+        }
+        else {
             isRequireCheck = true;
         }
     }
@@ -86,13 +88,14 @@ public class PermissionsActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE && hasAllPermissionsGranted(grantResults)) {
             isRequireCheck = true;
             allPermissionsGranted();
-        } else {
+        }
+        else {
             isRequireCheck = false;
             showMissingPermissionDialog();
         }
     }
 
-    private boolean hasAllPermissionsGranted( int[] grantResults) {
+    private boolean hasAllPermissionsGranted(int[] grantResults) {
         for (int grantResult : grantResults) {
             if (grantResult == PackageManager.PERMISSION_DENIED) {
                 return false;

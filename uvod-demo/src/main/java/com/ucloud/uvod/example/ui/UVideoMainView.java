@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -26,7 +27,7 @@ import com.ucloud.uvod.example.ui.base.UBrightnessHelper;
 import com.ucloud.uvod.example.ui.base.UMenuItem;
 import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
 import com.ucloud.uvod.example.ui.base.UVolumeHelper;
-import com.ucloud.uvod.example.ui.widget.URotateVideoView;
+import com.ucloud.uvod.example.ui.widget.URotateLayout;
 import com.ucloud.uvod.example.ui.widget.UVerticalProgressView;
 import com.ucloud.uvod.widget.UVideoView;
 
@@ -39,65 +40,76 @@ import butterknife.ButterKnife;
  */
 public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView.Callback, UBottomView.Callback, USettingMenuView.Callback {
     public static final String TAG = "UVideoMainView";
-    private Activity mContext;
+
+    private Activity activity;
+
     private static final int MSG_SHOW_TOP_AND_BOTTOM_VIEW = 1;
     private static final int MSG_HIDE_TOP_AND_BOTTOM_VIEW = 2;
+    private static final int MSG_SHOW_SETTING_MENU_VIEW = 3;
+    private static final int MSG_HIDE_SETTING_MENU_VIEW = 4;
+    private static final int MSG_SHOW_LOADING_VIEW = 5;
+    private static final int MSG_HIDE_LOADING_VIEW = 6;
+    private static final int MSG_UPDATE_PROGRSS = 7;
+    private static final int MSG_SHOW_BACKGROUND_VIEW = 8;
+    private static final int MSG_HIDE_BACKGROUND_VIEW = 9;
 
-    private static final int MSG_SHOW_SETTING_MENU_VIEW = 7;
-    private static final int MSG_HIDE_SETTING_MENU_VIEW = 8;
-
-    private static final int MSG_SHOW_LOADING_VIEW = 13;
-    private static final int MSG_HIDE_LOADING_VIEW = 14;
-    private static final int MSG_UPDATE_PROGRSS = 15;
-
-    private static final int UPDATE_PROGRESS_INTERVAL = 1000;
-
-    private int mMenuViewShowOrHideAnimationDuration = 100;
+    private static final int UPDATE_PROGRESS_INTERVAL = 20;
+    private static final int MENU_VIEW_ANIMATION_DURATION = 100;
 
     @Bind(R.id.bottomview)
-    UBottomView mBottomView;
+    UBottomView bottomView;
 
     @Bind(R.id.topview)
-    UTopView mTopView;
+    UTopView topView;
 
     @Bind(R.id.videoview)
-    URotateVideoView mRotateVideoView;
+    UVideoView videoView;
 
     @Bind(R.id.setting_menu_view_ll)
-    USettingMenuView mSettingMenuView;
+    USettingMenuView settingMenuView;
 
     @Bind(R.id.volume_view)
-    UVerticalProgressView mVolumeView;
+    UVerticalProgressView volumeView;
 
     @Bind(R.id.brightness_view)
-    UVerticalProgressView mBrightnessView;
+    UVerticalProgressView brightnessView;
 
     @Bind(R.id.loading)
-    View mLoadingView;
+    View loadingView;
 
     @Bind(R.id.loading_container)
-    View mLoadingContainer;
+    View loadingContainer;
 
     @Bind(R.id.circle_play_status)
-    View mPlayStatusView;
+    View playerStatusView;
 
-    TableLayout mHudView;
+    TableLayout debugInfoHudView;
 
-    private int mRatio = UVideoView.VIDEO_RATIO_FIT_PARENT;
+    @Bind(R.id.rl_player_bg)
+    View playerBackgroundView;
 
-    private int mOriention = URotateVideoView.ORIENTATION_SENSOR;
+    @Bind(R.id.rotate_layout)
+    URotateLayout rotateLayout;
 
-    private GestureDetector mGestureDetector;
-    private InnerGestureDetector mInnerGestrueDetectoer;
-    private int mScreenWidth;
-    private int mScreenHeight;
-    private USettingMenuView.Callback mSettingMenuItemSelectedListener;
+    private int ratio = UVideoView.VIDEO_RATIO_FIT_PARENT;
 
-    private UPlayerStateListener mOnPlayerStateListener;
+    private GestureDetector gestureDetector;
+
+    private InnerGestureDetector innerGestrueDetectoer;
+
+    private int screenWidth;
+
+    private int screenHeight;
+
+    private USettingMenuView.Callback settingMenuItemSelectedListener;
+
+    private UPlayerStateListener outterPlayerStateListener;
+
+    private UPlayerStateListener playerStateListener;
 
     private boolean isFastSeekMode;
 
-    protected String mUri;
+    protected String uri;
 
     private boolean isSuccess = true;
 
@@ -109,7 +121,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     private boolean isPausedByManual = false;
 
-    private int mSeekWhenPrepared = 0;
+    private int seekWhenPrepared = 0;
 
     @SuppressLint("HandlerLeak")
     private Handler uiHandler = new Handler() {
@@ -136,6 +148,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 case MSG_UPDATE_PROGRSS:
                     doUpdateProgress();
                     break;
+                case MSG_SHOW_BACKGROUND_VIEW:
+                    doShowBackgroundView();
+                    break;
+                case MSG_HIDE_BACKGROUND_VIEW:
+                    doHideBackgroundView();
+                    break;
                 default:
                     break;
             }
@@ -160,17 +178,17 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     @SuppressLint("ClickableViewAccessibility")
     private void init(Context context) {
         avProfile = new UMediaProfile();
-        mInnerGestrueDetectoer = new InnerGestureDetector();
-        mGestureDetector = new GestureDetector(getContext(), mInnerGestrueDetectoer);
-        setOnTouchListener(mGestureTouchListener);
+        innerGestrueDetectoer = new InnerGestureDetector();
+        gestureDetector = new GestureDetector(getContext(), innerGestrueDetectoer);
+        setOnTouchListener(gestureTouchListener);
         updateScreenWidthAndHeight(context);
     }
 
     private void updateScreenWidthAndHeight(Context context) {
         Pair<Integer, Integer> resolution = Utils.getResolution(context);
-        mScreenWidth = resolution.first;
-        mScreenHeight = resolution.second;
-        isFullscreen = mScreenWidth >= mScreenHeight;
+        screenWidth = resolution.first;
+        screenHeight = resolution.second;
+        isFullscreen = screenWidth >= screenHeight;
     }
 
     @Override
@@ -184,17 +202,17 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     private void initVolumeHelper() {
         UVolumeHelper volumeHelper = new UVolumeHelper(getContext());
-        if (mVolumeView != null) {
-            mVolumeView.setIconNormalResId(R.drawable.player_icon_bottomview_volume_button_normal);
-            mVolumeView.setHelper(volumeHelper);
+        if (volumeView != null) {
+            volumeView.setIconNormalResId(R.drawable.player_icon_bottomview_volume_button_normal);
+            volumeView.setHelper(volumeHelper);
         }
     }
 
     private void initBrightnessHelper() {
         UBrightnessHelper brightnessHelper = new UBrightnessHelper(getContext());
-        if (mBrightnessView != null) {
-            mBrightnessView.setIconNormalResId(R.drawable.player_icon_bottomview_brightness_button_normal);
-            mBrightnessView.setHelper(brightnessHelper);
+        if (brightnessView != null) {
+            brightnessView.setIconNormalResId(R.drawable.player_icon_bottomview_brightness_button_normal);
+            brightnessView.setHelper(brightnessHelper);
         }
     }
 
@@ -203,69 +221,73 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     private void initListeners() {
-        if (mTopView != null) {
-            mTopView.registerCallback(this);
+        if (topView != null) {
+            topView.setCallback(this);
         }
-        if (mBottomView != null) {
-            mBottomView.registerCallback(this);
-            mBottomView.setPlayerController(this);
+        if (bottomView != null) {
+            bottomView.setCallback(this);
+            bottomView.setPlayerController(this);
         }
-        if (mPlayStatusView != null) {
-            mPlayStatusView.setOnClickListener(mPlayStatusViewClickListener);
+        if (playerStatusView != null) {
+            playerStatusView.setOnClickListener(playerStatusViewClickListener);
         }
     }
 
-    OnClickListener mPlayStatusViewClickListener = new OnClickListener() {
+    OnClickListener playerStatusViewClickListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            if (mRotateVideoView != null && !mRotateVideoView.isPlaying()) {
+            if (videoView != null && !videoView.isPlaying()) {
                 togglePlayerToPlay();
             }
         }
     };
 
     public void setVideoPath(String uri) {
-        mSeekWhenPrepared = 0;
-        mUri = uri;
-        mRotateVideoView.setOnPlayerStateListener(mPlayerStateLisnter);
-        mRotateVideoView.setMediaPorfile(avProfile);
-        mRotateVideoView.setHudView(mHudView);
-        mRotateVideoView.setVideoPath(mUri);
-        mRotateVideoView.applyAspectRatio(mRatio);
+        seekWhenPrepared = 0;
+        this.uri = uri;
+        videoView.setOnPlayerStateListener(playerStateLisnter);
+        videoView.setMediaPorfile(avProfile);
+        videoView.setHudView(debugInfoHudView);
+//        videoView.setVideoPath(this.uri);
+        videoView.setVideoPath(uri, 0);
+        videoView.applyAspectRatio(ratio);
     }
 
-    UPlayerStateListener mPlayerStateLisnter = new UPlayerStateListener() {
+    UPlayerStateListener playerStateLisnter = new UPlayerStateListener() {
         @Override
         public void onPlayerStateChanged(UPlayerStateListener.State state, int extra1, Object extra2) {
+            Log.e(TAG, "onPlayerStateChanged ->" + state.name());
             switch (state) {
                 case PREPARING:
                     notifyShowLoadingView(0);
                     break;
                 case PREPARED:
-                    notifyHideLoadingView(0);
                     dealOnPrepared();
-                    if (mRotateVideoView != null && mSeekWhenPrepared >= 0) {
-                        mRotateVideoView.seekTo(mSeekWhenPrepared);
+                    if (videoView != null && seekWhenPrepared >= 0) {
+                        videoView.seekTo(seekWhenPrepared);
                     }
+                    notifyHideLoadingView(1000);
                     break;
                 case START:
-                    mPlayStatusView.setVisibility(View.GONE);
-                    mBottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
-                    mBottomView.release();
+                    playerStatusView.setVisibility(View.GONE);
+                    bottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
+                    bottomView.release();
                     break;
                 case PAUSE:
                     break;
                 case COMPLETED:
-                    mSeekWhenPrepared = 0;
+                    seekWhenPrepared = 0;
                     dealCompletion();
                     break;
                 case SEEK_END:
                     notifyHideLoadingView(1000);
                     break;
+                default:
+                    break;
             }
-            if (mOnPlayerStateListener != null) {
-                mOnPlayerStateListener.onPlayerStateChanged(state, extra1, extra2);
+            if (outterPlayerStateListener != null) {
+                outterPlayerStateListener.onPlayerStateChanged(state, extra1, extra2);
             }
         }
 
@@ -278,16 +300,26 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 case BUFFERING_END:
                     notifyHideLoadingView(0);
                     break;
+                case BUFFERING_PERCENT:
+                    Log.e(TAG, "percent = " + extra2);
+                    // 缓冲百分比回调
+                    break;
+                case VIDEO_RENDERING_START:
+                    notifyHideLoadingView(1000);
+                    notifyHideBackgroundView(0);
+                    break;
+                default:
+                    break;
             }
-            if (mOnPlayerStateListener != null) {
-                mOnPlayerStateListener.onPlayerInfo(info, extra1, extra2);
+            if (outterPlayerStateListener != null) {
+                outterPlayerStateListener.onPlayerInfo(info, extra1, extra2);
             }
         }
 
         @Override
         public void onPlayerError(UPlayerStateListener.Error error, int extra1, Object extra2) {
-            if (mOnPlayerStateListener != null) {
-                mOnPlayerStateListener.onPlayerError(error, extra1, extra2);
+            if (outterPlayerStateListener != null) {
+                outterPlayerStateListener.onPlayerError(error, extra1, extra2);
             }
         }
     };
@@ -295,12 +327,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     @Override
     public void onResume() {
         if (!isPausedByManual) {
-            mRotateVideoView.onResume();
+            videoView.onResume();
         }
     }
 
     public boolean isNavigationBarShown() {
-        return mBottomView != null && mBottomView.getVisibility() == View.VISIBLE;
+        return bottomView != null && bottomView.getVisibility() == View.VISIBLE;
     }
 
     public void notifyShowNavigationBar(int delay) {
@@ -332,61 +364,62 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     public boolean isSettingMenuViewShown() {
-        return mSettingMenuView != null && mSettingMenuView.getVisibility() == View.VISIBLE;
+        return settingMenuView != null && settingMenuView.getVisibility() == View.VISIBLE;
     }
 
     private void doShowSettingMenuView() {
-        if (mSettingMenuView != null && mSettingMenuView.getVisibility() != View.VISIBLE && isSuccess) {
-            mSettingMenuView.setVisibility(View.VISIBLE);
+        if (settingMenuView != null && settingMenuView.getVisibility() != View.VISIBLE && isSuccess) {
+            settingMenuView.setVisibility(View.VISIBLE);
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f);
-            ta.setDuration(mMenuViewShowOrHideAnimationDuration);
-            mSettingMenuView.startAnimation(ta);
+            ta.setDuration(MENU_VIEW_ANIMATION_DURATION);
+            settingMenuView.startAnimation(ta);
         }
     }
 
     private void doHideSettingMenuView() {
-        if (mSettingMenuView != null && isSuccess) {
-            mSettingMenuView.setVisibility(View.GONE);
+        if (settingMenuView != null && isSuccess) {
+            settingMenuView.setVisibility(View.GONE);
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f);
-            ta.setDuration(mMenuViewShowOrHideAnimationDuration);
-            mSettingMenuView.startAnimation(ta);
+            ta.setDuration(MENU_VIEW_ANIMATION_DURATION);
+            settingMenuView.startAnimation(ta);
         }
     }
 
     private void doShowNavigationBar() {
-        if (mBottomView != null && mBottomView.getVisibility() != View.VISIBLE) {
-            mBottomView.setVisibility(View.VISIBLE);
+        if (bottomView != null && bottomView.getVisibility() != View.VISIBLE) {
+            bottomView.setVisibility(View.VISIBLE);
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f);
             ta.setDuration(100);
-            mBottomView.startAnimation(ta);
+            bottomView.startAnimation(ta);
         }
-        if (mTopView != null && mTopView.getVisibility() != View.VISIBLE) {
-            mTopView.setVisibility(View.VISIBLE);
+        if (topView != null && topView.getVisibility() != View.VISIBLE) {
+            topView.setVisibility(View.VISIBLE);
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -1f, Animation.RELATIVE_TO_SELF, 0f);
             ta.setDuration(100);
-            mTopView.startAnimation(ta);
+            topView.startAnimation(ta);
         }
     }
 
     private void doHideNavigationBar() {
-        if (mBottomView != null && mBottomView.getVisibility() == View.VISIBLE) {
+        if (bottomView != null && bottomView.getVisibility() == View.VISIBLE) {
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f);
             ta.setDuration(100);
-            mBottomView.startAnimation(ta);
-            mBottomView.setVisibility(View.GONE);
+            bottomView.startAnimation(ta);
+            bottomView.setVisibility(View.GONE);
         }
-        if (mTopView != null && mTopView.getVisibility() == View.VISIBLE) {
+        if (topView != null && topView.getVisibility() == View.VISIBLE) {
             TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -1f);
             ta.setDuration(100);
-            mTopView.startAnimation(ta);
-            mTopView.setVisibility(View.GONE);
+            topView.startAnimation(ta);
+            topView.setVisibility(View.GONE);
         }
     }
 
     private void singleTapConfirmed() {
-        if (mBottomView != null && mBottomView.isShown()) {
+        if (bottomView != null && bottomView.isShown()) {
             notifyHideNavigationBar(0);
-        } else {
+        }
+        else {
             if (!isNavigationBarShown()) {
                 notifyShowNavigationBar(0);
             }
@@ -394,33 +427,33 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     private void hideVolumeView() {
-        if (mVolumeView != null && mVolumeView.getVisibility() == View.VISIBLE) {
-            mVolumeView.setVisibility(View.GONE);
+        if (volumeView != null && volumeView.getVisibility() == View.VISIBLE) {
+            volumeView.setVisibility(View.GONE);
         }
-        if (mBrightnessView != null && mBrightnessView.getVisibility() == View.VISIBLE) {
-            mBrightnessView.setVisibility(View.GONE);
+        if (brightnessView != null && brightnessView.getVisibility() == View.VISIBLE) {
+            brightnessView.setVisibility(View.GONE);
         }
     }
 
-    OnTouchListener mGestureTouchListener = new OnTouchListener() {
+    OnTouchListener gestureTouchListener = new OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            boolean result = mGestureDetector.onTouchEvent(event);
+            boolean result = gestureDetector.onTouchEvent(event);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_UP:
-                    if (mRotateVideoView != null && isFastSeekMode && mBottomView != null && mBottomView.getLastFastSeekPosition() != -1) {
-                        if (mRotateVideoView.canSeekForward()) {
-                            notifyShowLoadingView(0);
-                            mRotateVideoView.seekTo(mBottomView.getLastFastSeekPosition());
+                    if (videoView != null && isFastSeekMode && bottomView != null && bottomView.getLastFastSeekPosition() != -1) {
+                        if (videoView.canSeekForward()) {
+                            notifyShowLoadingView(1);
+                            videoView.seekTo(bottomView.getLastFastSeekPosition());
+                            bottomView.notifyHideFaskSeekIndexBar(1000);
+                            bottomView.notifyUpdateVideoProgressBar(bottomView.getLastFastSeekPosition());
+                            bottomView.setLastFastSeekPosition(-1);
                         }
                         isFastSeekMode = false;
-                        mBottomView.notifyHideFaskSeekIndexBar(1000);
-                        mBottomView.notifyUpdateVideoProgressBar(mBottomView.getLastFastSeekPosition());
-                        mBottomView.setLastFastSeekPosition(-1);
                     }
-                    if (mInnerGestrueDetectoer != null) {
-                        mInnerGestrueDetectoer.init();
+                    if (innerGestrueDetectoer != null) {
+                        innerGestrueDetectoer.init();
                     }
                     break;
                 default:
@@ -431,31 +464,30 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     };
 
     class InnerGestureDetector extends GestureDetector.SimpleOnGestureListener {
-
         private float x1 = -1;
         private float y1 = -1;
-        private int MIN_SLIDE_DISTANCE = 40;
-        private int mMinVerticalSlideDistance = MIN_SLIDE_DISTANCE;
-        private int mMinHorizontalSlideDistance = MIN_SLIDE_DISTANCE;
+        private int minSlideDistance = 40;
+        private int minVerticalSlideDistance = minSlideDistance;
+        private int minHorizontalSlideDistance = minSlideDistance;
         private boolean isSeekEnable = false;
-        public InnerGestureDetector() {
+        InnerGestureDetector() {
             init();
         }
 
-        public void init() {
+        void init() {
             x1 = -1;
             y1 = -1;
             ViewConfiguration mViewConfiguration = ViewConfiguration.get(getContext());
-            MIN_SLIDE_DISTANCE = mViewConfiguration.getScaledTouchSlop();
-            mMinHorizontalSlideDistance = mMinVerticalSlideDistance = MIN_SLIDE_DISTANCE;
+            minSlideDistance = mViewConfiguration.getScaledTouchSlop();
+            minHorizontalSlideDistance = minVerticalSlideDistance = minSlideDistance;
         }
 
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
             x1 = -1;
             y1 = -1;
-            if (mBottomView != null) {
-                mBottomView.setLastSeekPosition(-1);
+            if (bottomView != null) {
+                bottomView.setLastSeekPosition(-1);
             }
             return false;
         }
@@ -470,41 +502,42 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 int slideX = (int) (e2.getX() - x1);
                 int slideY = (int) (e2.getY() - y1);
                 boolean slideVertical = Math.abs(slideY) >= Math.abs(slideX);
-                if (slideVertical && Math.abs(slideY) > mMinVerticalSlideDistance
-                        && x1 > mScreenWidth / 2) {
-                    mVolumeView.change(slideY < 0, false);
-                    mBrightnessView.setVisibility(View.GONE);
-                    mVolumeView.setVisibility(View.VISIBLE);
+                if (slideVertical && Math.abs(slideY) > minVerticalSlideDistance
+                        && x1 > screenWidth / 2) {
+                    volumeView.change(slideY < 0, false);
+                    brightnessView.setVisibility(View.GONE);
+                    volumeView.setVisibility(View.VISIBLE);
                     x1 = e2.getX();
                     y1 = e2.getY();
-                    mMinHorizontalSlideDistance = mScreenWidth;
+                    minHorizontalSlideDistance = screenWidth;
                     return true;
                 }
-                if (slideVertical && Math.abs(slideY) > mMinVerticalSlideDistance
-                        && x1 < mScreenWidth / 2) {
-                    mBrightnessView.change(slideY < 0, false);
-                    mVolumeView.setVisibility(View.GONE);
-                    mBrightnessView.setVisibility(View.VISIBLE);
+                if (slideVertical && Math.abs(slideY) > minVerticalSlideDistance
+                        && x1 < screenWidth / 2) {
+                    brightnessView.change(slideY < 0, false);
+                    volumeView.setVisibility(View.GONE);
+                    brightnessView.setVisibility(View.VISIBLE);
                     x1 = e2.getX();
                     y1 = e2.getY();
-                    mMinHorizontalSlideDistance = mScreenWidth;
+                    minHorizontalSlideDistance = screenWidth;
                     return true;
                 }
-                if (isSuccess && mRotateVideoView.isInPlaybackState() && isSeekEnable) {
-                    if (!slideVertical && Math.abs(slideX) > mMinHorizontalSlideDistance) {
+                if (isSuccess && videoView.isInPlaybackState() && isSeekEnable) {
+                    if (!slideVertical && Math.abs(slideX) > minHorizontalSlideDistance) {
                         isFastSeekMode = true;
                         if (!isNavigationBarShown()) {
                             notifyShowNavigationBar(0);
                         }
-                        mBottomView.notifyShowFaskSeekIndexBar(0);
-                        mBottomView.fastSeek(slideX > 0);
+                        bottomView.notifyShowFaskSeekIndexBar(0);
+                        bottomView.fastSeek(slideX > 0);
                         x1 = e2.getX();
                         y1 = e2.getY();
-                        mMinVerticalSlideDistance = mScreenHeight;
+                        minVerticalSlideDistance = screenHeight;
                         return true;
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
             return false;
@@ -516,11 +549,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                 float x2 = e.getX();
                 float range;
                 if (!isFullscreen()) {
-                    range = mScreenWidth;
-                } else {
-                    range = 5 * mScreenWidth / 6;
+                    range = screenWidth;
                 }
-                if (mRotateVideoView != null && !mRotateVideoView.isInPlaybackState()) {
+                else {
+                    range = 5 * screenWidth / 6;
+                }
+                if (videoView != null && !videoView.isInPlaybackState()) {
                     return super.onSingleTapConfirmed(e);
                 }
 
@@ -529,15 +563,17 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     if (isFullscreen()) {
                         notifyShowSettingMenuView(0);
                     }
-                } else {
+                }
+                else {
                     if (isSettingMenuViewShown()) {
-                        notifyHideSettingMenuView(0);
+                        notifyHideSettingMenuView(10);
                     }
                     else {
                         singleTapConfirmed();
                     }
                 }
-            } catch (Exception error) {
+            }
+            catch (Exception error) {
                 error.printStackTrace();
             }
             return super.onSingleTapConfirmed(e);
@@ -546,8 +582,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     @Override
     public boolean onLeftButtonClick(View view) {
-        if(isFullscreen()) toggleScreenOrientation();
-        else mContext.finish();
+        if (isFullscreen()) {
+            toggleScreenOrientation();
+        }
+        else {
+            activity.finish();
+        }
         return false;
     }
 
@@ -559,26 +599,25 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     @Override
     public void init(Activity context) {
-        mContext = context;
+        activity = context;
     }
 
     @Override
     public void toggleScreenOrientation() {
-        if (mRotateVideoView != null) {
-            mRotateVideoView.toggleOrientation();
+        if (rotateLayout != null) {
+            rotateLayout.toggleOrientation();
         }
     }
 
     public void setScreenOriention(int oriention) {
-        if(mRotateVideoView != null) {
-            mOriention = oriention;
-            mRotateVideoView.setOrientation(mOriention);
+        if (videoView != null) {
+            rotateLayout.setOrientation(oriention);
         }
     }
 
     @Override
     public void setPlayerStateLisnter(UPlayerStateListener l) {
-        mOnPlayerStateListener = l;
+        outterPlayerStateListener = l;
     }
 
     @Override
@@ -588,8 +627,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     public void onConfigurationChanged(Configuration newConfig) {
         if (!isFullscreen()) {
-            if(mSettingMenuView != null) {
-                mSettingMenuView.setVisibility(View.GONE);
+            if (settingMenuView != null) {
+                settingMenuView.setVisibility(View.GONE);
             }
         }
     }
@@ -602,11 +641,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     @Override
     public boolean onPlayButtonClick(View view) {
-        if (mRotateVideoView != null) {
-            if (mRotateVideoView.isPlaying()) {
+        if (videoView != null) {
+            if (videoView.isPlaying()) {
                 isPausedByManual = true;
                 togglePlayerToPause();
-            } else {
+            }
+            else {
                 isPausedByManual = false;
                 togglePlayerToPlay();
             }
@@ -615,58 +655,57 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     private void togglePlayerToPause() {
-        mRotateVideoView.pause();
-        mPlayStatusView.setVisibility(View.VISIBLE);
-        mBottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_play_button_normal);
+        videoView.pause();
+        playerStatusView.setVisibility(View.VISIBLE);
+        bottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_play_button_normal);
     }
 
     private void togglePlayerToPlay() {
-        mPlayStatusView.setVisibility(View.GONE);
-        mRotateVideoView.start();
-        mBottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
+        playerStatusView.setVisibility(View.GONE);
+        videoView.start();
+        bottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
     }
 
     public void dealOnPrepared() {
-        notifyHideLoadingView(1000);
         notifyUpdateProgress();
         if (!isInitSettingMenu) {
             UMenuItemHelper menuItemHelper = UMenuItemHelper.getInstance(getContext());
             menuItemHelper.release();
-            menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoRatioMenuItem(mRatio), true);
+            menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoRatioMenuItem(ratio), true);
             menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoPlayerMenuItem(avProfile.getInteger(UMediaProfile.KEY_MEDIACODEC, 0)));
-            mSettingMenuView.init();
-            mSettingMenuView.setOnMenuItemSelectedListener(this);
+            settingMenuView.init();
+            settingMenuView.setOnMenuItemSelectedListener(this);
             isInitSettingMenu = true;
         }
-
-        boolean isCanSeek = !mRotateVideoView.isLiveStreaming();
-        mInnerGestrueDetectoer.isSeekEnable = isCanSeek;
-        mBottomView.setSeekEnable(isCanSeek);
+        boolean isCanSeek = !videoView.isLiveStreaming();
+        bottomView.setVisibility(View.VISIBLE);
+        innerGestrueDetectoer.isSeekEnable = isCanSeek;
+        bottomView.setSeekEnable(isCanSeek);
     }
 
     public void dealCompletion() {
-        if (mBottomView != null && mRotateVideoView != null && mPlayStatusView != null) {
+        if (bottomView != null && videoView != null && playerStatusView != null) {
             togglePlayerToPause();
         }
     }
 
     @Override
     public boolean isInPlaybackState() {
-        return mRotateVideoView != null && mRotateVideoView.isInPlaybackState();
+        return videoView != null && videoView.isInPlaybackState();
     }
 
     @Override
     public int getDuration() {
-        if (mRotateVideoView != null) {
-            return mRotateVideoView.getDuration();
+        if (videoView != null) {
+            return videoView.getDuration();
         }
         return 0;
     }
 
     @Override
     public void seekTo(int position) {
-        if (mRotateVideoView != null) {
-            mRotateVideoView.seekTo(position);
+        if (videoView != null) {
+            videoView.seekTo(position);
         }
     }
 
@@ -677,48 +716,50 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     @Override
     public int getCurrentPosition() {
-        if (mRotateVideoView != null) {
-            return mRotateVideoView.getCurrentPosition();
+        if (videoView != null) {
+            return videoView.getCurrentPosition();
         }
         return 0;
     }
 
     @Override
     public int toggleAspectRatio() {
-        return mRotateVideoView.toggleAspectRatio();
+        return videoView.toggleAspectRatio();
     }
 
     @Override
     public int toggleRender() {
-        return mRotateVideoView.toggleRender();
+        return videoView.toggleRender();
     }
 
     @Override
     public void onPause() {
-        if (mRotateVideoView != null) {
-            mRotateVideoView.onPause();
+        if (videoView != null) {
+            videoView.onPause();
             isFullscreen = isFullscreen();
         }
     }
 
     @Override
     public boolean onBrightnessButtonClick(View view) {
-        if (mBrightnessView != null && mBrightnessView.isShown()) {
-            mBrightnessView.setVisibility(View.GONE);
-        } else {
-            assert mBrightnessView != null;
-            mBrightnessView.setVisibility(View.VISIBLE);
+        if (brightnessView != null && brightnessView.isShown()) {
+            brightnessView.setVisibility(View.GONE);
+        }
+        else {
+            assert brightnessView != null;
+            brightnessView.setVisibility(View.VISIBLE);
         }
         return false;
     }
 
     @Override
     public boolean onVolumeButtonClick(View view) {
-        if (mVolumeView != null && mVolumeView.getVisibility() == View.VISIBLE) {
-            mVolumeView.setVisibility(View.GONE);
-        } else {
-            assert mVolumeView != null;
-            mVolumeView.setVisibility(View.VISIBLE);
+        if (volumeView != null && volumeView.getVisibility() == View.VISIBLE) {
+            volumeView.setVisibility(View.GONE);
+        }
+        else {
+            assert volumeView != null;
+            volumeView.setVisibility(View.VISIBLE);
         }
         return false;
     }
@@ -731,14 +772,28 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     @Override
     public void onDestroy() {
         UMenuItemHelper.getInstance(getContext()).release();
-        mRotateVideoView.onDestroy();
-        mSeekWhenPrepared = 0;
+        videoView.onDestroy();
+        seekWhenPrepared = 0;
     }
 
     private void notifyShowLoadingView(int duration) {
         Message msg = Message.obtain();
         msg.what = MSG_SHOW_LOADING_VIEW;
         uiHandler.removeMessages(MSG_SHOW_LOADING_VIEW);
+        uiHandler.sendMessageDelayed(msg, duration);
+    }
+
+    private void notifyShowBackgroundView(int duration) {
+        Message msg = Message.obtain();
+        msg.what = MSG_SHOW_BACKGROUND_VIEW;
+        uiHandler.removeMessages(MSG_SHOW_BACKGROUND_VIEW);
+        uiHandler.sendMessageDelayed(msg, duration);
+    }
+
+    private void notifyHideBackgroundView(int duration) {
+        Message msg = Message.obtain();
+        msg.what = MSG_HIDE_BACKGROUND_VIEW;
+        uiHandler.removeMessages(MSG_HIDE_BACKGROUND_VIEW);
         uiHandler.sendMessageDelayed(msg, duration);
     }
 
@@ -749,37 +804,43 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         uiHandler.sendMessageDelayed(msg, duration);
     }
 
-    private void doShowLoadingView() {
-        if (mLoadingContainer != null && mLoadingContainer.getVisibility() == View.GONE && mLoadingView != null) {
-            mLoadingContainer.setVisibility(View.VISIBLE);
-//            RotateAnimation rotateAnimation = new RotateAnimation(0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-//            rotateAnimation.setDuration(2000);
-//            rotateAnimation.setRepeatMode(RotateAnimation.RESTART);
-//            rotateAnimation.setRepeatCount(-1);
-//            mLoadingView.startAnimation(rotateAnimation);
+    private void doShowBackgroundView() {
+        if (playerBackgroundView != null) {
+            playerBackgroundView.setVisibility(View.VISIBLE);
         }
     }
 
-    private void doHideLoadingView(){
-        if (mLoadingContainer != null && mLoadingView != null) {
-//            mLoadingView.clearAnimation();
-            mLoadingContainer.setVisibility(View.GONE);
+    private void doHideBackgroundView() {
+        if (playerBackgroundView != null) {
+            playerBackgroundView.setVisibility(View.GONE);
+        }
+    }
+
+    private void doShowLoadingView() {
+        if (loadingContainer != null && loadingContainer.getVisibility() == View.GONE && loadingView != null) {
+            loadingContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void doHideLoadingView() {
+        if (loadingContainer != null && loadingView != null) {
+            loadingContainer.setVisibility(View.GONE);
         }
     }
 
     private void doUpdateProgress() {
-        if (mRotateVideoView != null && mRotateVideoView.isInPlaybackState()) {
-            int currnetPosition = mRotateVideoView.getCurrentPosition();
-            int duration = mRotateVideoView.getDuration();
-            if (mBottomView != null) {
-                mBottomView.onPositionChanaged(currnetPosition, duration);
+        if (videoView != null && videoView.isInPlaybackState()) {
+            int currnetPosition = videoView.getCurrentPosition();
+            int duration = videoView.getDuration();
+            if (bottomView != null) {
+                bottomView.onPositionChanaged(currnetPosition, duration);
             }
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     notifyUpdateProgress();
                 }
-            },UPDATE_PROGRESS_INTERVAL);
+            }, UPDATE_PROGRESS_INTERVAL);
         }
     }
 
@@ -791,51 +852,50 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     public void initAspectRatio(int ratio) {
-        mRatio = ratio;
+        this.ratio = ratio;
     }
 
     @Override
     public UVideoView getVideoView() {
-        return mRotateVideoView.getVideoView();
+        return videoView;
     }
 
     @Override
     public void setHudView(TableLayout hudView) {
-        mHudView = hudView;
+        debugInfoHudView = hudView;
     }
 
     @Override
-    public void setOnSettingMenuItemSelectedListener(USettingMenuView.Callback l) {
-        mSettingMenuItemSelectedListener = l;
+    public void setMenuItemSelectedListener(USettingMenuView.Callback l) {
+        settingMenuItemSelectedListener = l;
     }
 
     @Override
     public boolean onSettingMenuSelected(UMenuItem item) {
         boolean flag = false;
-        if (mSettingMenuItemSelectedListener != null) {
-            flag = mSettingMenuItemSelectedListener.onSettingMenuSelected(item);
+        if (settingMenuItemSelectedListener != null) {
+            flag = settingMenuItemSelectedListener.onSettingMenuSelected(item);
         }
-        if (!flag) try {
-            if (item.parent != null) {
-               if(item.parent != null && item.parent.title.equals(mContext.getResources().getString(R.string.menu_item_title_ratio))) {
-                    mRotateVideoView.applyAspectRatio(Integer.parseInt(item.type));
-                } else if (item.parent != null && item.parent.title.equals(mContext.getResources().getString(R.string.menu_item_title_videocodec))) {
-                   notifyShowLoadingView(0);
-                   mSeekWhenPrepared = mRotateVideoView.getCurrentPosition();
-                   mRotateVideoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
-                   mRotateVideoView.setVideoPath(mUri);
-               } else {
-                   //toggle source uri
-/*                   notifyShowLoadingView(0);
-                   mSeekWhenPrepared = mRotateVideoView.getCurrentPosition(); //get last play position?
-                   mSeekWhenPrepared = 0;//is reset by yourself
-                   mUri = "your new uri";
-                   mRotateVideoView.setVideoPath(mUri);*/
-               }
-                notifyHideSettingMenuView(0);
+        if (!flag) {
+            try {
+                if (item.parent != null) {
+                    if (item.parent.title.equals(activity.getResources().getString(R.string.menu_item_title_ratio))) {
+                        videoView.applyAspectRatio(Integer.parseInt(item.type));
+                    }
+                    else if (item.parent.title.equals(activity.getResources().getString(R.string.menu_item_title_videocodec))) {
+//                        notifyShowBackgroundView(0); //切换时显示背景图片
+                        notifyShowLoadingView(0);
+                        videoView.pause();
+                        seekWhenPrepared = videoView.getCurrentPosition();
+                        videoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
+                        videoView.setVideoPath(uri, seekWhenPrepared);
+                    }
+                    notifyHideSettingMenuView(0);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

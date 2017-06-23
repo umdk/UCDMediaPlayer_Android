@@ -28,174 +28,173 @@ import com.ucloud.uvod.widget.UVideoView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Created by lw.tan on 2015/10/10.
- */
 public class UEasyPlayerActivity extends FragmentActivity implements USettingMenuView.Callback, UPlayerStateListener {
 
-	public static final String TAG = "EasyPlayer";
+    public static final String TAG = "EasyPlayer";
 
-	@Bind(R.id.video_main_view)
-	UEasyPlayer mEasyPlayer;
+    @Bind(R.id.video_main_view)
+    UEasyPlayer easyPlayer;
 
-	@Bind(R.id.hud_view)
-	TableLayout mHudView;
+    @Bind(R.id.hud_view)
+    TableLayout debugInfoHudView;
 
-	private String mUri;
+    private String uri;
 
-	@Override
-	protected void onCreate(Bundle bundles) {
-		super.onCreate(bundles);
-		setContentView(R.layout.activity_video_demo1);
-		ButterKnife.bind(this);
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    @Override
+    protected void onCreate(Bundle bundles) {
+        super.onCreate(bundles);
+        setContentView(R.layout.activity_video_demo1);
+        ButterKnife.bind(this);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        uri = getIntent().getStringExtra(MainActivity.KEY_URI);
+        String intentAction = getIntent().getAction();
+        if (!TextUtils.isEmpty(intentAction) && intentAction.equals(Intent.ACTION_VIEW)) {
+            uri = getIntent().getDataString();
+            uri = Uri.decode(uri);
+        }
+        easyPlayer.init(this);
 
-		mUri = getIntent().getStringExtra(MainActivity.KEY_URI);
+        UMediaProfile profile = new UMediaProfile();
+        profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1));
+        profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0));  //  1 live streaming 0 vod streaming
+        profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0));
+        profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
+        profile.setInteger(UMediaProfile.KEY_RENDER_SURFACUE, 1);
 
-		String intentAction = getIntent().getAction();
-		if (!TextUtils.isEmpty(intentAction) && intentAction.equals(Intent.ACTION_VIEW)) {
-			mUri = getIntent().getDataString();
-			mUri = Uri.decode(mUri);
-		}
+        profile.setInteger(UMediaProfile.KEY_PREPARE_TIMEOUT, 1000 * 15);
+        profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 15);
 
-		mEasyPlayer.init(this);
+        if (uri != null && uri.endsWith("m3u8")) {
+            profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0); // m3u8 默认不开启延时丢帧策略
+        }
 
-		UMediaProfile profile = new UMediaProfile();
-		profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1));
-		profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0));  //  1 live streaming 0 vod streaming
-		profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0));
-		profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0));
+        easyPlayer.setMediaProfile(profile);
+        easyPlayer.setScreenOriention(UEasyPlayer.SCREEN_ORIENTATION_SENSOR);
+        easyPlayer.setPlayerStateLisnter(this);
+        easyPlayer.setMenuItemSelectedListener(this);
 
-		profile.setInteger(UMediaProfile.KEY_PREPARE_TIMEOUT, 1000 * 5);
-		profile.setInteger(UMediaProfile.KEY_MIN_READ_FRAME_TIMEOUT_RECONNECT_INTERVAL, 3);
+        if (getIntent().getIntExtra(MainActivity.KEY_SHOW_DEBUG_INFO, 1) == 1) {
+            easyPlayer.setHudView(debugInfoHudView);
+        }
+        easyPlayer.initAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
+        easyPlayer.setVideoPath(uri);
 
-		profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 5);
-		profile.setInteger(UMediaProfile.KEY_MIN_PREPARE_TIMEOUT_RECONNECT_INTERVAL, 3);
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(1000);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkStateListener, filter);
+    }
 
-		if (mUri != null && mUri.endsWith("m3u8")) {
-			profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0);// m3u8 默认不开启延时丢帧策略
-		}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        easyPlayer.onPause();
+    }
 
-		mEasyPlayer.setMediaProfile(profile);
-		mEasyPlayer.setScreenOriention(UEasyPlayer.SCREEN_ORIENTATION_SENSOR);
-		mEasyPlayer.setPlayerStateLisnter(this);
-		mEasyPlayer.setOnSettingMenuItemSelectedListener(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        easyPlayer.onResume();
+    }
 
-		if(getIntent().getIntExtra(MainActivity.KEY_SHOW_DEBUG_INFO, 1) == 1) {
-			mEasyPlayer.setHudView(mHudView);
-		}
-		mEasyPlayer.initAspectRatio(UVideoView.VIDEO_RATIO_FIT_PARENT);
-		//open before setVideoPath VIDEO_RATIO_FILL_PARENT or VIDEO_RATIO_16_9_FIT_PARENT VIDEO_RATIO_4_3_FIT_PARENT VIDEO_RATIO_WRAP_CONTENT ...
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        easyPlayer.onDestroy();
+        unregisterReceiver(networkStateListener);
+    }
 
-		mEasyPlayer.setVideoPath(mUri);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (easyPlayer.isFullscreen()) {
+                easyPlayer.toggleScreenOrientation();
+                return true;
+            }
+            else {
+                finish();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
-		IntentFilter filter = new IntentFilter();
-		filter.setPriority(1000);
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		registerReceiver(mNetworkStateListener, filter);
-	}
+    @Override
+    public boolean onSettingMenuSelected(UMenuItem item) {
+        return false;
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		mEasyPlayer.onPause();
-	}
+    private BroadcastReceiver networkStateListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeInfo = manager.getActiveNetworkInfo();
+                if (activeInfo == null) {
+                    Toast.makeText(context, R.string.info1, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		mEasyPlayer.onResume();
-	}
+    @Override
+    public void onPlayerStateChanged(State state, int extra1, Object extra2) {
+        Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged " + state.name());
+        switch (state) {
+            case PREPARING:
+                break;
+            case PREPARED:
+                break;
+            case START:
+                break;
+            case PAUSE:
+                break;
+            case STOP:
+                break;
+            case VIDEO_SIZE_CHANGED:
+                break;
+            case COMPLETED:
+                break;
+            case RECONNECT:
+                break;
+            default:
+                break;
+        }
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mEasyPlayer.onDestroy();
-		unregisterReceiver(mNetworkStateListener);
-	}
+    @Override
+    public void onPlayerInfo(Info info, int extra1, Object extra2) {
+        switch (info) {
+            case BUFFERING_START:
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerInfo BUFFERING_START.");
+                break;
+            case BUFFERING_END:
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerInfo BUFFERING_END.");
+                break;
+            case BUFFERING_UPDATE:
+                break;
+            case BUFFERING_PERCENT:
+                break;
+            default:
+                break;
+        }
+    }
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mEasyPlayer.isFullscreen()) {
-				mEasyPlayer.toggleScreenOrientation();
-				return true;
-			} else {
-				finish();
-			}
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
-	@Override
-	public boolean onSettingMenuSelected(UMenuItem item) {
-		return false;
-	}
-
-	private BroadcastReceiver mNetworkStateListener = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-				ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo activeInfo = manager.getActiveNetworkInfo();
-				if (activeInfo == null) {
-					Toast.makeText(context, getString(R.string.error_current_network_disconnected), Toast.LENGTH_LONG).show();
-				}
-			}
-		}
-	};
-
-	@Override
-	public void onPlayerStateChanged(State state, int extra1, Object extra2) {
-		Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerStateChanged " + state.name());
-		switch (state) {
-			case PREPARING:
-				break;
-			case PREPARED:
-				break;
-			case START:
-				break;
-			case PAUSE:
-				break;
-			case STOP:
-				break;
-			case VIDEO_SIZE_CHANGED:
-				break;
-			case COMPLETED:
-				break;
-			case RECONNECT:
-				break;
-		}
-	}
-
-	@Override
-	public void onPlayerInfo(Info info, int extra1, Object extra2) {
-		switch (info) {
-			case BUFFERING_START:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerInfo BUFFERING_START.");
-				break;
-			case BUFFERING_END:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerInfo BUFFERING_END.");
-				break;
-			case BUFFERING_UPDATE:
-				break;
-		}
-	}
-
-	@Override
-	public void onPlayerError(Error error, int extra1, Object extra2) {
-		switch (error) {
-			case IOERROR:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError IOERROR.");
-				break;
-			case PREPARE_TIMEOUT://just a warn
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError PREPARE_TIMEOUT.");
-				break;
-			case READ_FRAME_TIMEOUT://just a warn
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError READ_FRAME_TIMEOUT.");
-				break;
-			case UNKNOWN:
-				Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError UNKNOWN.");
-				break;
-		}
-	}
+    @Override
+    public void onPlayerError(Error error, int extra1, Object extra2) {
+        switch (error) {
+            case IOERROR:
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError IOERROR.");
+                break;
+            case PREPARE_TIMEOUT://just a warn
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError PREPARE_TIMEOUT.");
+                break;
+            case READ_FRAME_TIMEOUT://just a warn
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError READ_FRAME_TIMEOUT.");
+                break;
+            case UNKNOWN:
+                Log.i(TAG, "lifecycle->EasyPlayer->demo-> onPlayerError UNKNOWN.");
+                break;
+            default:
+                break;
+        }
+    }
 }

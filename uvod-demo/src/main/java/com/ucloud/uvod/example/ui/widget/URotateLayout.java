@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 /**
- * Created by lw.tan on 2015/10/10.
+ * @author lw.tan on 2015/10/10.
  */
 public class URotateLayout extends FrameLayout {
     public static final String TAG = "URotateLayout";
@@ -21,14 +21,14 @@ public class URotateLayout extends FrameLayout {
     public static final int ORIENTATION_SENSOR = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
     public static final int ORIENTATION_LOCKED = ActivityInfo.SCREEN_ORIENTATION_LOCKED;
 
-    private int mOrientation;
-    private int mLastOrientation;
+    private int orientation;
+    private int lastOrientation;
 
-    private int mDefaultVideoContainerWidth;
-    private int mDefaultVideoContainerHeight;
+    private int defaultVideoContainerWidth;
+    private int defaultVideoContainerHeight;
 
-    private int mScreenWidth;
-    private int mScreenHeight;
+    private int screenWidth;
+    private int screenHeight;
 
     public URotateLayout(Context context) {
         super(context);
@@ -46,13 +46,13 @@ public class URotateLayout extends FrameLayout {
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
-        mScreenWidth = metrics.widthPixels;
-        mScreenHeight = metrics.heightPixels;
+        screenWidth = metrics.widthPixels;
+        screenHeight = metrics.heightPixels;
     }
 
     public boolean isLandscape() {
         updateScreenWidthAndHeight();
-        return mScreenWidth > mScreenHeight;
+        return screenWidth > screenHeight;
     }
 
     @Override
@@ -60,17 +60,18 @@ public class URotateLayout extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         updateScreenWidthAndHeight();
         if (isLandscape()) {
-            mDefaultVideoContainerWidth = mScreenWidth;
-            mDefaultVideoContainerHeight = mScreenHeight;
-        } else {
-            mDefaultVideoContainerWidth = mScreenWidth;
-            mDefaultVideoContainerHeight = mScreenWidth * 9 / 16;
+            defaultVideoContainerWidth = screenWidth;
+            defaultVideoContainerHeight = screenHeight;
         }
-        setMeasuredDimension(mDefaultVideoContainerWidth, mDefaultVideoContainerHeight);
+        else {
+            defaultVideoContainerWidth = screenWidth;
+            defaultVideoContainerHeight = screenWidth * 9 / 16;
+        }
+        setMeasuredDimension(defaultVideoContainerWidth, defaultVideoContainerHeight);
     }
 
     public int getOrientation() {
-        return mOrientation;
+        return orientation;
     }
 
     public void setOrientation(int orientation) {
@@ -95,38 +96,41 @@ public class URotateLayout extends FrameLayout {
                 case ORIENTATION_LOCKED:
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
                     break;
+                default:
+                    break;
             }
-            mOrientation = orientation;
+            this.orientation = orientation;
             invalidate();
         }
     }
 
     public void locked() {
-        mLastOrientation = mOrientation;
+        lastOrientation = orientation;
         setOrientation(ORIENTATION_LOCKED);
     }
 
     public boolean isLocked() {
-        return mOrientation == ORIENTATION_LOCKED ? true : false;
+        return orientation == ORIENTATION_LOCKED ? true : false;
     }
 
     public void unlocked() {
-        setOrientation(mLastOrientation);
+        setOrientation(lastOrientation);
     }
 
     public void toggleOrientation() {
-        if (getContext() instanceof Activity && mOrientation != ORIENTATION_LOCKED) {
+        if (getContext() instanceof Activity && orientation != ORIENTATION_LOCKED) {
             Activity mActivity = (Activity) getContext();
             if (isLandscape()) {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            } else {
+            }
+            else {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
-            if (mOrientation == ORIENTATION_SENSOR) {
+            if (orientation == ORIENTATION_SENSOR) {
                 getHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        setOrientation(mOrientation);
+                        setOrientation(orientation);
                     }
                 }, 2000);
             }

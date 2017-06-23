@@ -8,89 +8,89 @@ import android.content.Context;
  *
  */
 public abstract class UBaseHelper {
-	public interface ChangeListener {
-		void onUpdateUI();
-	}
-	//当前进度
-	protected int mCurrentLevel;
+    public interface ChangeListener {
+    	void onUpdateUI();
+    }
+    //当前进度
+    protected int currentLevel;
 	//最大进度
-	protected int mMaxLevel;
+    protected int maxLevel;
 	//历史进度
-	protected int mHistoryLevel;
+    protected int historyLevel;
 	//每次增加的粒度
-	protected int mLevel;
-	protected ChangeListener mListener;
-	protected Context mContext;
+    protected int levelStep;
+    protected ChangeListener changeListener;
+    protected Context context;
+    public abstract void init(Context context);
+    public abstract void setValue(int level, boolean isTouch);
+    public abstract int getSystemValueLevel();
+
+    public UBaseHelper(Context context) {
+    	this.context = context;
+    	init(context);
+    }
+
+    public int getCurrentLevel() {
+    	return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+    	this.currentLevel = currentLevel;
+    }
+
+    public int getMaxLevel() {
+    	return maxLevel;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+    	this.maxLevel = maxLevel;
+    }
 	
-	public abstract void init(Context context);
-	public abstract void setValue(int level, boolean isTouch);
-	public abstract int getSystemValueLevel();
+    public int getHistoryLevel() {
+    	return historyLevel;
+    }
 	
-	public UBaseHelper(Context context) {
-		mContext = context;
-		init(context);
-	}
-	public int getCurrentLevel() {
-		return mCurrentLevel;
-	}
+    public void setHistoryLevel(int historyLevel) {
+    	this.historyLevel = historyLevel;
+    }
 	
-	public void setCurrentLevel(int currentLevel) {
-		mCurrentLevel = currentLevel;
-	}
+    public int getLevel() {
+    	return levelStep;
+    }
 	
-	public int getMaxLevel() {
-		return mMaxLevel;
-	}
+    public void setLevel(int level) {
+    	levelStep = level;
+    }
 	
-	public void setMaxLevel(int maxLevel) {
-		mMaxLevel = maxLevel;
-	}
+    public ChangeListener getChanageListener() {
+    	return changeListener;
+    }
 	
-	public int getHistoryLevel() {
-		return mHistoryLevel;
-	}
+    public void setOnChangeListener(ChangeListener l) {
+    	changeListener = l;
+    }
 	
-	public void setHistoryLevel(int historyLevel) {
-		mHistoryLevel = historyLevel;
-	}
+    public void increaseValue() {
+    	setValue(currentLevel + levelStep, false);
+    }
 	
-	public int getLevel() {
-		return mLevel;
-	}
+    public void decreaseValue() {
+    	setValue(currentLevel - levelStep, false);
+    }
 	
-	public void setLevel(int level) {
-		mLevel = level;
-	}
+    public boolean isZero() {
+    	return currentLevel == 0;
+    }
 	
-	public ChangeListener getChanageListener() {
-		return mListener;
-	}
+    public void setToZero() {
+    	setValue(0, false);
+    }
 	
-	public void setOnChangeListener(ChangeListener l) {
-		mListener = l;
-	}
+    public void updateValue() {
+    	currentLevel = getSystemValueLevel();
+    }
 	
-	public void increaseValue() {
-		setValue(mCurrentLevel + mLevel, false);
-	}
-	
-	public void decreaseValue() {
-		setValue(mCurrentLevel - mLevel, false);
-	}
-	
-	public boolean isZero() {
-		return mCurrentLevel == 0;
-	}
-	
-	public void setToZero() {
-		setValue(0, false);
-	}
-	
-	public void updateValue() {
-		mCurrentLevel = getSystemValueLevel();
-	}
-	
-	public void setVauleTouch(int level) {
-        setValue(level, true);
+    public void setVauleTouch(int level) {
+    	setValue(level, true);
     }
 }

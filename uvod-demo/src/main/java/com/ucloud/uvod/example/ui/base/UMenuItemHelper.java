@@ -5,33 +5,33 @@ import android.content.Context;
 
 import com.ucloud.uvod.example.R;
 
-/**
- * Created by lw.tan on 2015/8/11.
- */
-public class UMenuItemHelper {
-    private static UMenuItem mMainMenuItem;
-    private static UMenuItemHelper instance;
-    private static Context mContext;
+public final class UMenuItemHelper {
+
+    private static UMenuItem MAIN;
+
+    private static UMenuItemHelper INSTANCE;
+
+    private static Context APP_CONTEXT;
+
     private UMenuItemHelper(Context context) {
-        mContext = context;
-        mMainMenuItem = new UMenuItem.Builder().title(mContext.getResources().getString(R.string.menu_main_title))
-                .builder();
+        UMenuItemHelper.APP_CONTEXT = context;
+        MAIN = new UMenuItem.Builder().title(UMenuItemHelper.APP_CONTEXT.getResources().getString(R.string.menu_main_title)).builder();
     }
 
     public static UMenuItemHelper getInstance(Context context) {
-        if (instance == null) {
+        if (INSTANCE == null) {
             synchronized (UMenuItemHelper.class) {
-                if (instance == null) {
-                    instance = new UMenuItemHelper(context);
+                if (INSTANCE == null) {
+                    INSTANCE = new UMenuItemHelper(context);
                 }
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     public UMenuItem buildVideoPlayerMenuItem(int defaultSelect) {
-       return buildVideoMenuItem(
-               mContext.getResources().getString(R.string.menu_item_title_videocodec),
+        return buildVideoMenuItem(
+               APP_CONTEXT.getResources().getString(R.string.menu_item_title_videocodec),
                R.array.pref_videocodec_names,
                R.array.pref_videocodec_values,
                defaultSelect);
@@ -39,7 +39,7 @@ public class UMenuItemHelper {
 
     public UMenuItem buildVideoRatioMenuItem(int defaultSelect) {
         return buildVideoMenuItem(
-                mContext.getResources().getString(R.string.menu_item_title_ratio),
+                APP_CONTEXT.getResources().getString(R.string.menu_item_title_ratio),
                 R.array.pref_screen_ratio_names,
                 R.array.pref_screen_ratio_values,
                 defaultSelect);
@@ -47,37 +47,37 @@ public class UMenuItemHelper {
 
     public UMenuItem buildVideoMenuItem(String title, int resNameId, int resValueId, int defaultSelect) {
         UMenuItem menuItem = new UMenuItem.Builder().title(title).index(defaultSelect).builder();
-        String[] retNames = mContext.getResources().getStringArray(resNameId);
-        String[] types = mContext.getResources().getStringArray(resValueId);
-        for(int i = 0; i < retNames.length; i++) {
+        String[] retNames = APP_CONTEXT.getResources().getStringArray(resNameId);
+        String[] types = APP_CONTEXT.getResources().getStringArray(resValueId);
+        for (int i = 0; i < retNames.length; i++) {
             menuItem.childs.add(new UMenuItem.Builder().title(retNames[i]).type(types[i] + "").parent(menuItem).builder());
         }
         return menuItem;
     }
 
     public UMenuItem register(UMenuItem child) {
-       return register(child, false);
+        return register(child, false);
     }
 
     public UMenuItem register(UMenuItem child, boolean isDefaultSelected) {
-        if (mMainMenuItem != null && !mMainMenuItem.childs.contains(child)) {
-            mMainMenuItem.childs.add(child);
+        if (MAIN != null && !MAIN.childs.contains(child)) {
+            MAIN.childs.add(child);
             if (isDefaultSelected) {
-                mMainMenuItem.defaultSelected =  mMainMenuItem.childs.size() - 1;
+                MAIN.defaultSelected =  MAIN.childs.size() - 1;
             }
         }
-        return mMainMenuItem;
+        return MAIN;
     }
 
     public UMenuItem getMainMenu() {
-        return mMainMenuItem;
+        return MAIN;
     }
 
     public void release() {
-        if (mMainMenuItem != null && mMainMenuItem.childs != null) {
-            mMainMenuItem.childs.clear();
-            instance = null;
-            mMainMenuItem = null;
+        if (MAIN != null && MAIN.childs != null) {
+            MAIN.childs.clear();
+            INSTANCE = null;
+            MAIN = null;
         }
     }
 }

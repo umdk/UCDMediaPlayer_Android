@@ -10,16 +10,13 @@ import android.widget.ProgressBar;
 
 import com.ucloud.uvod.example.R;
 
-/**
- * 
- * Created by lw.tan on 2015/10/10.
- *
- */
 public class UVerticalProgressBar extends ProgressBar {
-    private int mBarWidth;
-    private int mBarHeight;
 
-    private boolean mHorizontal = false;
+    private int barWidth;
+
+    private int barHeight;
+
+    private boolean horizontal = false;
 
     public UVerticalProgressBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -34,34 +31,35 @@ public class UVerticalProgressBar extends ProgressBar {
         this(context, null);
     }
 
-   
     private void init() {
-        mBarWidth = getResources().getDimensionPixelSize(R.dimen.volume_vertical_progress_width);
-        mBarHeight = getResources().getDimensionPixelSize(R.dimen.vs_progressbar_height);
+        barWidth = getResources().getDimensionPixelSize(R.dimen.volume_vertical_progress_width);
+        barHeight = getResources().getDimensionPixelSize(R.dimen.vs_progressbar_height);
     }
 
     public void setOrientation(boolean horizontal) {
-        mHorizontal = horizontal;
+        this.horizontal = horizontal;
     }
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         try {
             Rect rec = getProgressDrawable().getBounds();
-            if (!mHorizontal) {
-                if (getWidth() > mBarWidth) {
-                    rec.left = (getWidth() - mBarWidth) / 2;
+            if (!horizontal) {
+                if (getWidth() > barWidth) {
+                    rec.left = (getWidth() - barWidth) / 2;
                     getProgressDrawable().setBounds(rec.left, rec.top,
-                            rec.left + mBarWidth, rec.bottom);
-                }
-            } else {
-                if (getHeight() > mBarHeight) {
-                    rec.top = (getHeight() - mBarWidth) / 2;
-                    getProgressDrawable().setBounds(rec.left, rec.top,
-                            rec.right, rec.top + mBarHeight);
+                            rec.left + barWidth, rec.bottom);
                 }
             }
-        } catch (Exception e) {
+            else {
+                if (getHeight() > barHeight) {
+                    rec.top = (getHeight() - barWidth) / 2;
+                    getProgressDrawable().setBounds(rec.left, rec.top,
+                            rec.right, rec.top + barHeight);
+                }
+            }
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         super.onDraw(canvas);

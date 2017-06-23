@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,214 +21,204 @@ import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.ucloud.uvod.example.ui.UVideoMainView.TAG;
-
-/**
- *
- * Created by lw.tan on 2015/10/10.
- *
- */
 public class USettingMenuView extends LinearLayout {
 
-	@Bind(R.id.listview)
-	ListView mSettingItemLv;
+    @Bind(R.id.listview)
+    ListView settingItemListView;
 
-	@Bind(R.id.listview_content)
-	ListView mSettingContentItemLv;
+    @Bind(R.id.listview_content)
+    ListView settingContentItemListView;
 
-	@Bind(R.id.menu_description_txtv)
-	TextView mMenuContentTitleTxtv;
+    @Bind(R.id.menu_description_txtv)
+    TextView menuContentTitleTxtv;
 
-	@Bind(R.id.menu_txtv)
-	TextView mMainMenuTitleTxtv;
+    @Bind(R.id.menu_txtv)
+    TextView mainMenuTitleTxtv;
 
-	private UMenuItem mMainMenuItem;
+    private UMenuItem mainMenuItem;
 
-	private MenuSettingAdapter mMenuSettingAdapter;
-	private MenuSettingContentAdapter mMenuSettingContentAdapter;
+    private MenuSettingAdapter menuSettingAdapter;
 
-	private Callback mSettingMenuViewClickListener;
+    private MenuSettingContentAdapter menuSettingContentAdapter;
 
+    private Callback callback;
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public USettingMenuView(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-	}
+    public interface Callback {
+        boolean onSettingMenuSelected(UMenuItem item);
+    }
 
-	public USettingMenuView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public USettingMenuView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-	public USettingMenuView(Context context) {
-		super(context, null);
-	}
+    public USettingMenuView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public interface Callback {
-		boolean onSettingMenuSelected(UMenuItem item);
-	}
+    public USettingMenuView(Context context) {
+        super(context, null);
+    }
 
-	@Override
-	protected void onFinishInflate() {
-		super.onFinishInflate();
-		ButterKnife.bind(this);
-	}
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.bind(this);
+    }
 
-	public void init() {
-		mMainMenuItem = UMenuItemHelper.getInstance(getContext()).getMainMenu();
+    public void init() {
+        mainMenuItem = UMenuItemHelper.getInstance(getContext()).getMainMenu();
+        menuSettingAdapter = new MenuSettingAdapter();
+        menuSettingContentAdapter = new MenuSettingContentAdapter();
+        if (mainMenuTitleTxtv != null) {
+            mainMenuTitleTxtv.setText(mainMenuItem.title);
+        }
+        if (menuContentTitleTxtv != null) {
+            menuContentTitleTxtv.setText(mainMenuItem.childs.get(mainMenuItem.defaultSelected).title);
+        }
+        settingItemListView.setAdapter(menuSettingAdapter);
+        settingItemListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UMenuItem item = mainMenuItem.childs.get(position);
+                menuSettingAdapter.notifyDataSetChanged();
+                menuSettingContentAdapter.notifyDataSetChanged();
+                if (mainMenuItem.defaultSelected != position) {
+                    mainMenuItem.defaultSelected = position;
+                    menuContentTitleTxtv.setText(item.title);
+                    if (callback != null) {
+                        callback.onSettingMenuSelected(item);
+                    }
+                }
+            }
+        });
+        settingContentItemListView.setAdapter(menuSettingContentAdapter);
+        settingContentItemListView.setOnItemClickListener(new OnItemClickListener() {
 
-		mMenuSettingAdapter = new MenuSettingAdapter();
-		mMenuSettingContentAdapter = new MenuSettingContentAdapter();
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                UMenuItem menuItem = mainMenuItem.childs.get(mainMenuItem.defaultSelected);
+                UMenuItem contentMenuItem = menuItem.childs.get(position);
+                if (menuItem.defaultSelected != Integer.parseInt(contentMenuItem.type)) {
+                    menuItem.defaultSelected = position;
+                    menuSettingContentAdapter.notifyDataSetChanged();
+                    menuSettingAdapter.notifyDataSetChanged();
+                    if (callback != null) {
+                        callback.onSettingMenuSelected(contentMenuItem);
+                    }
+                }
+            }
+        });
+    }
 
-		if (mMainMenuTitleTxtv != null) {
-			mMainMenuTitleTxtv.setText(mMainMenuItem.title);
-		}
+    class MenuSettingAdapter extends BaseAdapter {
 
-		if (mMenuContentTitleTxtv != null) {
-			mMenuContentTitleTxtv.setText(mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).title);
-		}
+        MenuSettingAdapter() {
 
-		mSettingItemLv.setAdapter(mMenuSettingAdapter);
+        }
 
-		mSettingItemLv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				UMenuItem item = mMainMenuItem.childs.get(position);
-				mMenuSettingAdapter.notifyDataSetChanged();
-				mMenuSettingContentAdapter.notifyDataSetChanged();
-				if (mMainMenuItem.defaultSelected != position) {
-					mMainMenuItem.defaultSelected = position;
-					mMenuContentTitleTxtv.setText(item.title);
-					if (mSettingMenuViewClickListener != null) {
-						mSettingMenuViewClickListener.onSettingMenuSelected(item);
-					}
-				}
-			}
-		});
+        @Override
+        public int getCount() {
+            return mainMenuItem.childs.size();
+        }
 
-		mSettingContentItemLv.setAdapter(mMenuSettingContentAdapter);
+        @Override
+        public Object getItem(int position) {
+            return mainMenuItem.childs.get(position);
+        }
 
-		mSettingContentItemLv.setOnItemClickListener(new OnItemClickListener() {
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-									int position, long id) {
-				UMenuItem menuItem = mMainMenuItem.childs.get(mMainMenuItem.defaultSelected);
-				UMenuItem contentMenuItem = menuItem.childs.get(position);
-				if (menuItem.defaultSelected != Integer.parseInt(contentMenuItem.type)) {
-					menuItem.defaultSelected = position;
-					mMenuSettingContentAdapter.notifyDataSetChanged();
-					mMenuSettingAdapter.notifyDataSetChanged();
-					if (mSettingMenuViewClickListener != null) {
-						mSettingMenuViewClickListener.onSettingMenuSelected(contentMenuItem);
-					}
-				}
-			}
-		});
-	}
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = View.inflate(getContext(), R.layout.player_layout_setting_menu_item, null);
+            TextView titleTxtv = (TextView) view.findViewById(R.id.title_txtv);
+            TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
+            UMenuItem item = mainMenuItem.childs.get(position);
+            if (item != null) {
+                titleTxtv.setText(item.title);
+                if (item.defaultSelected >= 0 && item.defaultSelected <= item.childs.size() - 1) {
+                    descriptionTxtv.setText(item.childs.get(item.defaultSelected).title);
+                }
+                else {
+                    if (item.childs != null && item.childs.size() >= 1) {
+                        descriptionTxtv.setText(item.childs.get(0).title);
+                    }
+                }
+            }
 
-	class MenuSettingAdapter extends BaseAdapter {
+            if (position == mainMenuItem.defaultSelected) {
+                titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+                descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+            }
+            else {
+                titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
+                descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
+            }
+            return view;
+        }
+    }
 
-		public MenuSettingAdapter() {
+    class MenuSettingContentAdapter extends BaseAdapter {
 
-		}
+        MenuSettingContentAdapter() {
 
-		@Override
-		public int getCount() {
-			return mMainMenuItem.childs.size();
-		}
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return mMainMenuItem.childs.get(position);
-		}
+        @Override
+        public int getCount() {
+            return mainMenuItem.childs != null && mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs != null ? mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs.size() : 0;
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public Object getItem(int position) {
+            return mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs.get(position);
+        }
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = View.inflate(getContext(), R.layout.player_layout_setting_menu_item, null);
-			TextView titleTxtv= (TextView) view.findViewById(R.id.title_txtv);
-			TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
-			UMenuItem item = mMainMenuItem.childs.get(position);
-			if (item != null) {
-				titleTxtv.setText(item.title);
-				if (item.defaultSelected >= 0 && item.defaultSelected <= item.childs.size() - 1) {
-					descriptionTxtv.setText(item.childs.get(item.defaultSelected).title);
-				} else {
-					if (item.childs != null && item.childs.size() >= 1) {
-						descriptionTxtv.setText(item.childs.get(0).title);
-					}
-				}
-			}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-			if(position == mMainMenuItem.defaultSelected) {
-				titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
-				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
-			}else{
-				titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
-				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
-			}
-			return view;
-		}
-	}
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            UMenuItem item = null;
+            if (mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs != null && mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs.size() > 0) {
+                item = mainMenuItem.childs.get(mainMenuItem.defaultSelected).childs.get(position);
+            }
 
-	class MenuSettingContentAdapter extends BaseAdapter {
+            View view;
+            if (item != null && !TextUtils.isEmpty(item.description)) {
+                view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item, null);
+            }
+            else {
+                view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item2, null);
+            }
+            TextView titleTxtv = (TextView) view.findViewById(R.id.title_txtv);
+            TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
+            if (item != null) {
+                titleTxtv.setText(item.title);
+                descriptionTxtv.setText(item.description);
+            }
 
-		public MenuSettingContentAdapter() {
+            if ((item.parent != null && position == item.parent.defaultSelected) || item.parent.childs.size() == 1) {
+                titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+                descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
+            }
+            else {
+                view.setBackgroundResource(android.R.color.transparent);
+                titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
+                descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
+            }
+            return view;
+        }
+    }
 
-		}
-
-		@Override
-		public int getCount() {
-			return mMainMenuItem.childs != null && mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs != null ? mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs.size() : 0;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			UMenuItem item = null;
-			if (mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs != null && mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs.size() > 0 ) {
-				item = mMainMenuItem.childs.get(mMainMenuItem.defaultSelected).childs.get(position);
-			}
-
-			View view = null;
-			if (item != null && !TextUtils.isEmpty(item.description)) {
-				view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item, null);
-			} else {
-				view = View.inflate(getContext(), R.layout.player_layout_setting_menu_content_item2, null);
-			}
-			TextView titleTxtv= (TextView) view.findViewById(R.id.title_txtv);
-			TextView descriptionTxtv = (TextView) view.findViewById(R.id.description_txtv);
-			if (item != null) {
-				titleTxtv.setText(item.title);
-				descriptionTxtv.setText(item.description);
-			}
-
-			if((item.parent != null && position == item.parent.defaultSelected) || item.parent.childs.size() == 1){
-				titleTxtv.setTextColor(getResources().getColor(R.color.color_progress));
-				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_progress));
-			} else {
-				view.setBackgroundResource(android.R.color.transparent);
-				titleTxtv.setTextColor(getResources().getColor(R.color.color_white));
-				descriptionTxtv.setTextColor(getResources().getColor(R.color.color_white_alpha_alpha40));
-			}
-			return view;
-		}
-	}
-
-	public void setOnMenuItemSelectedListener(Callback l) {
-		mSettingMenuViewClickListener = l;
-	}
+    public void setOnMenuItemSelectedListener(Callback l) {
+        callback = l;
+    }
 }

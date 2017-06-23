@@ -16,41 +16,39 @@ import com.ucloud.uvod.example.ui.base.UBaseHelper.ChangeListener;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * 
- * Created by lw.tan on 2015/10/10.
- *
- */
-public class UVerticalProgressView extends RelativeLayout implements
-        ChangeListener {
+public class UVerticalProgressView extends RelativeLayout implements ChangeListener {
     private static final int MSG_HIDE = 1;
     private static final int DELAY_HIDE = 5000;
 
     @Bind(R.id.volume_icon)
-    ImageView mVolumeIcon;
+    ImageView volumeIcon;
 
     @Bind(R.id.volume_progress)
-    UVerticalProgressBar mVerticalProgressBar;
+    UVerticalProgressBar verticalProgressBar;
 
-    private UBaseHelper mBaseHelper;
-    private boolean mIsUseSystemVolume;
-    private int mIconNormalResId;
+    private UBaseHelper baseHelper;
 
-	private class UiHandler extends Handler {
+    private boolean isUseSystemVolume;
+
+    private int iconNormalResId;
+
+    private UiHandler uiHandler = new UiHandler();
+
+    private class UiHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_HIDE:
                     hide();
                     break;
+                default:
+                    break;
             }
         }
     }
 
-    private UiHandler mHandler = new UiHandler();
-
     public void setIconNormalResId(int resId) {
-    	mIconNormalResId = resId;
+        iconNormalResId = resId;
     }
 
     public UVerticalProgressView(Context context, AttributeSet attrs, int i) {
@@ -68,19 +66,19 @@ public class UVerticalProgressView extends RelativeLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this);
-        mVerticalProgressBar.setOrientation(false);
-        mIsUseSystemVolume = true;
+        verticalProgressBar.setOrientation(false);
+        isUseSystemVolume = true;
     }
 
     public void setHelper(UBaseHelper baseHelper) {
-    	mBaseHelper = baseHelper;
-    	mBaseHelper.setOnChangeListener(this);
-    	mVerticalProgressBar.setMax(mBaseHelper.getMaxLevel());
-    	updateProgressBar();
+        this.baseHelper = baseHelper;
+        this.baseHelper.setOnChangeListener(this);
+        verticalProgressBar.setMax(this.baseHelper.getMaxLevel());
+        updateProgressBar();
     }
 
     @SuppressLint("ClickableViewAccessibility")
-	public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         if (trackTouch(event)) {
             show();
             return true;
@@ -90,34 +88,36 @@ public class UVerticalProgressView extends RelativeLayout implements
 
     private boolean trackTouch(MotionEvent event) {
         switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-        case MotionEvent.ACTION_MOVE:
-            mVerticalProgressBar.setProgress(computeLevel(event.getY()));
-            return true;
-        case MotionEvent.ACTION_UP:
-            int level = computeLevel(event.getY());
-            mVerticalProgressBar.setProgress(level);
-            mBaseHelper.setVauleTouch(level);
-            return true;
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                verticalProgressBar.setProgress(computeLevel(event.getY()));
+                return true;
+            case MotionEvent.ACTION_UP:
+                int level = computeLevel(event.getY());
+                verticalProgressBar.setProgress(level);
+                baseHelper.setVauleTouch(level);
+                return true;
+            default:
+                break;
         }
-
         return false;
     }
-    
+
     private int computeLevel(float location) {
         int level = 0;
-        if (location <= mVerticalProgressBar.getTop()) {
-            level = mVerticalProgressBar.getMax();
-        } else if (location >= mVerticalProgressBar.getBottom()) {
-            level = 0;
-        } else {
-            level = (int) Math
-                    .ceil((mVerticalProgressBar.getHeight() - location + mVerticalProgressBar
-                            .getTop())
-                            * mVerticalProgressBar.getMax()
-                            / mVerticalProgressBar.getHeight());
+        if (location <= verticalProgressBar.getTop()) {
+            level = verticalProgressBar.getMax();
         }
-
+        else if (location >= verticalProgressBar.getBottom()) {
+            level = 0;
+        }
+        else {
+            level = (int) Math
+                    .ceil((verticalProgressBar.getHeight() - location + verticalProgressBar
+                            .getTop())
+                            * verticalProgressBar.getMax()
+                            / verticalProgressBar.getHeight());
+        }
         return level;
     }
 
@@ -126,44 +126,47 @@ public class UVerticalProgressView extends RelativeLayout implements
     }
 
     public void updateProgressBar() {
-    	if (mBaseHelper != null) {
-    		mBaseHelper.updateValue();
-		}
-        if (mVerticalProgressBar != null) {
-            mVerticalProgressBar.setProgress((int)mBaseHelper.getCurrentLevel());
+        if (baseHelper != null) {
+            baseHelper.updateValue();
         }
-        if (mBaseHelper.isZero()) {
-            mVolumeIcon.setImageResource(mIconNormalResId);
-        } else {
-            mVolumeIcon.setImageResource(mIconNormalResId);
+        if (verticalProgressBar != null) {
+            verticalProgressBar.setProgress((int) baseHelper.getCurrentLevel());
+        }
+        if (baseHelper.isZero()) {
+            volumeIcon.setImageResource(iconNormalResId);
+        }
+        else {
+            volumeIcon.setImageResource(iconNormalResId);
         }
     }
 
     public void change(boolean isUp, boolean isZero) {
         if (isZero) {
-            mBaseHelper.isZero();
-        } else {
+            baseHelper.isZero();
+        }
+        else {
             if (isUp) {
-            	mBaseHelper.increaseValue();
-            } else {
-            	mBaseHelper.decreaseValue();
+                baseHelper.increaseValue();
+            }
+            else {
+                baseHelper.decreaseValue();
             }
         }
         show();
     }
 
     public boolean isUseSystemValue() {
-        return mIsUseSystemVolume;
+        return isUseSystemVolume;
     }
 
     public void show() {
-        mHandler.removeMessages(MSG_HIDE);
+        uiHandler.removeMessages(MSG_HIDE);
         setVisibility(VISIBLE);
-        mHandler.sendEmptyMessageDelayed(MSG_HIDE, DELAY_HIDE);
+        uiHandler.sendEmptyMessageDelayed(MSG_HIDE, DELAY_HIDE);
     }
 
     public void hide() {
-        mHandler.removeMessages(MSG_HIDE);
+        uiHandler.removeMessages(MSG_HIDE);
         setVisibility(GONE);
     }
 }

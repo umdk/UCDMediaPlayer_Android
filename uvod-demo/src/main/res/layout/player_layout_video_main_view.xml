@@ -6,12 +6,28 @@
     android:background="@color/color_transparent"
     android:longClickable="true" >
 
-    <com.ucloud.uvod.example.ui.widget.URotateVideoView
-        android:id="@+id/videoview"
+    <com.ucloud.uvod.example.ui.widget.URotateLayout
+        android:id="@+id/rotate_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/color_transparent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" >
+
+        <com.ucloud.uvod.widget.UVideoView
+            android:id="@+id/videoview"
+            android:layout_gravity="center"
+            android:background="@color/color_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/rl_player_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/player_bg"
+            android:layout_gravity="center"
+            android:visibility="visible"/>
+
+    </com.ucloud.uvod.example.ui.widget.URotateLayout>
 
     <com.ucloud.uvod.example.ui.UTopView
         android:id="@+id/topview"
@@ -365,7 +381,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left|top"
         android:visibility="gone"
         android:id="@+id/loading_container"
         android:layout_height="wrap_content">
@@ -379,6 +395,7 @@
             android:src="@drawable/player_loading" />
 
         <TextView
+            android:id="@+id/txtv_loading_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/loading"
@@ -387,7 +404,7 @@
             android:layout_margin="@dimen/dp_5"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/sp_25"
-            android:textColor="@color/color_white"
+            android:textColor="@color/dark_blue"
             android:background="@color/transparent_dark"
             android:padding="5dp"
             />

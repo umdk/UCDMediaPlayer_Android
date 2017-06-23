@@ -11,73 +11,72 @@ import com.ucloud.uvod.example.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
 /**
- *
  * Created by lw.tan on 2015/10/10.
- *
  */
 public class UTopView extends RelativeLayout {
-	private Callback mCallabck;
-	
-	@Bind(R.id.topview_title_txtv)
-	TextView mTitleTxtv;
-	
-	@Bind(R.id.topview_left_button)
-	ImageButton mLeftImgBtn;
-	
-	@Bind(R.id.topview_right_button)
-	ImageButton mRightImgBtn;
+    private Callback callback;
 
-	public interface Callback {
-		boolean onLeftButtonClick(View view);
-		boolean onRightButtonClick(View view);
-	}
-	
-	public UTopView(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-	}
+    @Bind(R.id.topview_title_txtv)
+    TextView titleTxtv;
 
-	public UTopView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    @Bind(R.id.topview_left_button)
+    ImageButton leftImgBtn;
 
-	public UTopView(Context context) {
-		this(context, null);
-	}
+    @Bind(R.id.topview_right_button)
+    ImageButton rightImgBtn;
 
-	@Override
-	protected void onFinishInflate() {
-		super.onFinishInflate();
-		ButterKnife.bind(this);
-		mLeftImgBtn.setOnClickListener(mLeftButtonClickListener);
-		mRightImgBtn.setOnClickListener(mRightButtonClickListener);
-	}
+    public interface Callback {
+        boolean onLeftButtonClick(View view);
+        boolean onRightButtonClick(View view);
+    }
 
-	OnClickListener mLeftButtonClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (mCallabck != null) {
-				mCallabck.onLeftButtonClick(v);
-			}
-		}
-	};
+    public UTopView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-	OnClickListener mRightButtonClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (mCallabck != null) {
-				mCallabck.onRightButtonClick(v);
-			}
-		}
-	};
+    public UTopView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public void registerCallback(Callback callback) {
-		mCallabck = callback;
-	}
+    public UTopView(Context context) {
+        this(context, null);
+    }
 
-	public void setTitle(int resid) {
-		if (mTitleTxtv != null) {
-			mTitleTxtv.setText(resid);
-		}
-	}
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.bind(this);
+        leftImgBtn.setOnClickListener(leftButtonClickListener);
+        rightImgBtn.setOnClickListener(rightButtonClickListener);
+    }
+
+    OnClickListener leftButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (callback != null) {
+                callback.onLeftButtonClick(v);
+            }
+        }
+    };
+
+    OnClickListener rightButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (callback != null) {
+                callback.onRightButtonClick(v);
+            }
+        }
+    };
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public void setTitle(int resid) {
+        if (titleTxtv != null) {
+            titleTxtv.setText(resid);
+        }
+    }
 }
