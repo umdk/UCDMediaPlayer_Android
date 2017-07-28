@@ -267,7 +267,6 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     if (videoView != null && seekWhenPrepared >= 0) {
                         videoView.seekTo(seekWhenPrepared);
                     }
-                    notifyHideLoadingView(1000);
                     break;
                 case START:
                     playerStatusView.setVisibility(View.GONE);
@@ -281,7 +280,6 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     dealCompletion();
                     break;
                 case SEEK_END:
-                    notifyHideLoadingView(1000);
                     break;
                 default:
                     break;
@@ -301,12 +299,15 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     notifyHideLoadingView(0);
                     break;
                 case BUFFERING_PERCENT:
-                    Log.e(TAG, "percent = " + extra2);
+//                    Log.e(TAG, "percent = " + extra2);
                     // 缓冲百分比回调
                     break;
                 case VIDEO_RENDERING_START:
-                    notifyHideLoadingView(1000);
+                    notifyHideLoadingView(0);
                     notifyHideBackgroundView(0);
+                    break;
+                case AUDIO_RENDERING_START:
+//                    notifyHideLoadingView(0);
                     break;
                 default:
                     break;
@@ -883,14 +884,14 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                         videoView.applyAspectRatio(Integer.parseInt(item.type));
                     }
                     else if (item.parent.title.equals(activity.getResources().getString(R.string.menu_item_title_videocodec))) {
-//                        notifyShowBackgroundView(0); //切换时显示背景图片
+//                        notifyShowBackgroundView(0); //根据需要自行决定切换时是否需要显示封面图片，自定义封面在布局文件指定或代码实现
                         notifyShowLoadingView(0);
                         videoView.pause();
                         seekWhenPrepared = videoView.getCurrentPosition();
                         videoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                         videoView.setVideoPath(uri, seekWhenPrepared);
                     }
-                    notifyHideSettingMenuView(0);
+//                    notifyHideSettingMenuView(0);
                 }
             }
             catch (Exception e) {
