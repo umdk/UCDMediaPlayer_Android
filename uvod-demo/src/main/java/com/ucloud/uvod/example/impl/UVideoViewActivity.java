@@ -77,6 +77,7 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
         //若需要区分4G是否继续播放等与用户确认相关的操作，设置为0，自行根据Android API监听网络状态调用setVideoPath做重连控制操作。
         profile.setInteger(UMediaProfile.KEY_ENABLE_NETWORK_RECOVERY_RECONNECT, 1); //当发生网络切换恢复时SDK内部会做重连（默认为0 不开启 1不开启)
         profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0); // 点播默认不开启延时丢帧策略
+        profile.setInteger(UMediaProfile.KEY_IS_MUSIC_PLAYER, 1); //如果播放的是纯音频流，设置为1，默认为0
 
         if (uri != null && uri.endsWith("m3u8")) {
             profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0); // m3u8 默认不开启延时丢帧策略
