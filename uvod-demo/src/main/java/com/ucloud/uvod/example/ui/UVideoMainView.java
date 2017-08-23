@@ -31,7 +31,7 @@ import com.ucloud.uvod.example.ui.widget.URotateLayout;
 import com.ucloud.uvod.example.ui.widget.UVerticalProgressView;
 import com.ucloud.uvod.widget.UVideoView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 /**
  *
@@ -56,39 +56,39 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     private static final int UPDATE_PROGRESS_INTERVAL = 20;
     private static final int MENU_VIEW_ANIMATION_DURATION = 100;
 
-    @Bind(R.id.bottomview)
+    @BindView(R.id.bottomview)
     UBottomView bottomView;
 
-    @Bind(R.id.topview)
+    @BindView(R.id.topview)
     UTopView topView;
 
-    @Bind(R.id.videoview)
+    @BindView(R.id.videoview)
     UVideoView videoView;
 
-    @Bind(R.id.setting_menu_view_ll)
+    @BindView(R.id.setting_menu_view_ll)
     USettingMenuView settingMenuView;
 
-    @Bind(R.id.volume_view)
+    @BindView(R.id.volume_view)
     UVerticalProgressView volumeView;
 
-    @Bind(R.id.brightness_view)
+    @BindView(R.id.brightness_view)
     UVerticalProgressView brightnessView;
 
-    @Bind(R.id.loading)
+    @BindView(R.id.loading)
     View loadingView;
 
-    @Bind(R.id.loading_container)
+    @BindView(R.id.loading_container)
     View loadingContainer;
 
-    @Bind(R.id.circle_play_status)
+    @BindView(R.id.circle_play_status)
     View playerStatusView;
 
     TableLayout debugInfoHudView;
 
-    @Bind(R.id.rl_player_bg)
+    @BindView(R.id.rl_player_bg)
     View playerBackgroundView;
 
-    @Bind(R.id.rotate_layout)
+    @BindView(R.id.rotate_layout)
     URotateLayout rotateLayout;
 
     private int ratio = UVideoView.VIDEO_RATIO_FIT_PARENT;
@@ -122,6 +122,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     private boolean isPausedByManual = false;
 
     private int seekWhenPrepared = 0;
+
+    private boolean isCompleted;
 
     @SuppressLint("HandlerLeak")
     private Handler uiHandler = new Handler() {
@@ -245,6 +247,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     public void setVideoPath(String uri) {
         seekWhenPrepared = 0;
+        isCompleted = false;
         this.uri = uri;
         videoView.setOnPlayerStateListener(playerStateLisnter);
         videoView.setMediaPorfile(avProfile);
@@ -269,6 +272,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     }
                     break;
                 case START:
+                    isCompleted = false;
+                    notifyUpdateProgress(0);
                     playerStatusView.setVisibility(View.GONE);
                     bottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
                     bottomView.release();
@@ -277,9 +282,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     break;
                 case COMPLETED:
                     seekWhenPrepared = 0;
+                    isCompleted = true;
                     dealCompletion();
                     break;
                 case SEEK_END:
+                    isCompleted = false;
+                    notifyUpdateProgress(0);
                     break;
                 default:
                     break;
@@ -668,7 +676,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     public void dealOnPrepared() {
-        notifyUpdateProgress();
+        notifyUpdateProgress(0);
         if (!isInitSettingMenu) {
             UMenuItemHelper menuItemHelper = UMenuItemHelper.getInstance(getContext());
             menuItemHelper.release();
@@ -685,6 +693,11 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     public void dealCompletion() {
+        if (bottomView != null) {
+            uiHandler.removeMessages(MSG_UPDATE_PROGRSS);
+            int duration = getDuration();
+            bottomView.onPositionChanaged(duration, duration);
+        }
         if (bottomView != null && videoView != null && playerStatusView != null) {
             togglePlayerToPause();
         }
@@ -775,6 +788,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         UMenuItemHelper.getInstance(getContext()).release();
         videoView.onDestroy();
         seekWhenPrepared = 0;
+        activity = null;
+        debugInfoHudView = null;
     }
 
     private void notifyShowLoadingView(int duration) {
@@ -830,26 +845,21 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     }
 
     private void doUpdateProgress() {
-        if (videoView != null && videoView.isInPlaybackState()) {
+        if (videoView != null && videoView.isInPlaybackState() && !isCompleted) {
             int currnetPosition = videoView.getCurrentPosition();
             int duration = videoView.getDuration();
             if (bottomView != null) {
                 bottomView.onPositionChanaged(currnetPosition, duration);
             }
-            uiHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifyUpdateProgress();
-                }
-            }, UPDATE_PROGRESS_INTERVAL);
+            notifyUpdateProgress(UPDATE_PROGRESS_INTERVAL);
         }
     }
 
-    private void notifyUpdateProgress() {
+    private void notifyUpdateProgress(int delay) {
         Message msg = Message.obtain();
         msg.what = MSG_UPDATE_PROGRSS;
         uiHandler.removeMessages(msg.what);
-        uiHandler.sendMessage(msg);
+        uiHandler.sendMessageDelayed(msg, delay);
     }
 
     public void initAspectRatio(int ratio) {
@@ -891,7 +901,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                         videoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                         videoView.setVideoPath(uri, seekWhenPrepared);
                     }
-//                    notifyHideSettingMenuView(0);
+                    notifyHideSettingMenuView(0);
                 }
             }
             catch (Exception e) {

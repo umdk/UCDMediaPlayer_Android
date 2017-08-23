@@ -22,7 +22,7 @@ public final class UMenuItemHelper {
         if (INSTANCE == null) {
             synchronized (UMenuItemHelper.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new UMenuItemHelper(context);
+                    INSTANCE = new UMenuItemHelper(context.getApplicationContext());
                 }
             }
         }

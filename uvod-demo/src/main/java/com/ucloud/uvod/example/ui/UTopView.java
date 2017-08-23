@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.ucloud.uvod.example.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -18,13 +18,13 @@ import butterknife.ButterKnife;
 public class UTopView extends RelativeLayout {
     private Callback callback;
 
-    @Bind(R.id.topview_title_txtv)
+    @BindView(R.id.topview_title_txtv)
     TextView titleTxtv;
 
-    @Bind(R.id.topview_left_button)
+    @BindView(R.id.topview_left_button)
     ImageButton leftImgBtn;
 
-    @Bind(R.id.topview_right_button)
+    @BindView(R.id.topview_right_button)
     ImageButton rightImgBtn;
 
     public interface Callback {

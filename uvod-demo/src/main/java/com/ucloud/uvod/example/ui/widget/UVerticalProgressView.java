@@ -13,17 +13,17 @@ import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.base.UBaseHelper;
 import com.ucloud.uvod.example.ui.base.UBaseHelper.ChangeListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UVerticalProgressView extends RelativeLayout implements ChangeListener {
     private static final int MSG_HIDE = 1;
     private static final int DELAY_HIDE = 5000;
 
-    @Bind(R.id.volume_icon)
+    @BindView(R.id.volume_icon)
     ImageView volumeIcon;
 
-    @Bind(R.id.volume_progress)
+    @BindView(R.id.volume_progress)
     UVerticalProgressBar verticalProgressBar;
 
     private UBaseHelper baseHelper;

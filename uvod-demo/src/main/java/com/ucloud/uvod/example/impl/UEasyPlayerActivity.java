@@ -1,5 +1,6 @@
 package com.ucloud.uvod.example.impl;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +10,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,18 +24,19 @@ import com.ucloud.uvod.example.ui.UEasyPlayer;
 import com.ucloud.uvod.example.ui.USettingMenuView;
 import com.ucloud.uvod.example.ui.base.UMenuItem;
 import com.ucloud.uvod.widget.UVideoView;
+import com.umeng.analytics.MobclickAgent;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UEasyPlayerActivity extends FragmentActivity implements USettingMenuView.Callback, UPlayerStateListener {
+public class UEasyPlayerActivity extends Activity implements USettingMenuView.Callback, UPlayerStateListener {
 
     public static final String TAG = "EasyPlayer";
 
-    @Bind(R.id.video_main_view)
+    @BindView(R.id.video_main_view)
     UEasyPlayer easyPlayer;
 
-    @Bind(R.id.hud_view)
+    @BindView(R.id.hud_view)
     TableLayout debugInfoHudView;
 
     private String uri;
@@ -93,12 +94,14 @@ public class UEasyPlayerActivity extends FragmentActivity implements USettingMen
     protected void onPause() {
         super.onPause();
         easyPlayer.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         easyPlayer.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override

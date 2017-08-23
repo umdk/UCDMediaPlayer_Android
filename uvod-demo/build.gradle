@@ -38,9 +38,10 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:preference-v7:25.3.1'
-    compile(name:'uvod-android-sdk-1.6.4', ext:'aar')
-    compile(name:'ucommon-android-sdk-1.0.6', ext:'aar')
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile(name: 'ucommon-android-sdk-2.0.0', ext: 'aar')
+    compile(name: 'uvod-android-sdk-2.0.0', ext: 'aar')
 }

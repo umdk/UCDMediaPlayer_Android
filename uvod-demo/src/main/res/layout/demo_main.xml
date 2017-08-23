@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
    >
-    <include layout="@layout/widget_toolbar" />
+   <!-- <include layout="@layout/widget_toolbar" />-->
 
     <ListView
         android:layout_alignParentBottom="true"
@@ -12,9 +12,9 @@
         android:layout_height="wrap_content" />
 
     <ScrollView
-        android:layout_above="@id/listview"
-        android:layout_below="@id/toolbar"
         android:orientation="vertical"
+        android:layout_above="@id/listview"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

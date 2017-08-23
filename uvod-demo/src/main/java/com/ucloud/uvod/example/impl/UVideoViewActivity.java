@@ -23,34 +23,33 @@ import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.AndroidMediaController;
 import com.ucloud.uvod.example.ui.TracksFragment;
 import com.ucloud.uvod.widget.UVideoView;
+import com.umeng.analytics.MobclickAgent;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import merge.tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 public class UVideoViewActivity extends AppCompatActivity implements TracksFragment.ITrackHolder, UPlayerStateListener {
 
-    @Bind(R.id.video_view)
+    @BindView(R.id.video_view)
     UVideoView videoView;
 
-    @Bind(R.id.toast_text_view)
+    @BindView(R.id.toast_text_view)
     TextView toastTextView;
 
-    @Bind(R.id.hud_view)
+    @BindView(R.id.hud_view)
     TableLayout debugInfoHudView;
 
-    @Bind(R.id.drawer_layout)
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
-    @Bind(R.id.right_drawer)
+    @BindView(R.id.right_drawer)
     ViewGroup rightDrawer;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     AndroidMediaController mediaController;
-
-    private boolean backPressed;
 
     private String uri;
 
@@ -105,12 +104,14 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
     protected void onPause() {
         super.onPause();
         videoView.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         videoView.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override
@@ -121,7 +122,6 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 
     @Override
     public void onBackPressed() {
-        backPressed = true;
         super.onBackPressed();
     }
 

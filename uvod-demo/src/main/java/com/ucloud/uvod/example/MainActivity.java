@@ -2,11 +2,10 @@ package com.ucloud.uvod.example;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,11 +22,12 @@ import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.UBuild;
 import com.ucloud.uvod.example.permission.PermissionsActivity;
 import com.ucloud.uvod.example.permission.PermissionsChecker;
+import com.umeng.analytics.MobclickAgent;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener {
+public class MainActivity extends Activity implements OnItemClickListener {
 
     public static final String KEY_MEDIACODEC = "mediacodec";
 
@@ -41,31 +41,28 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public static final String KEY_URI = "uri";
 
-    @Bind(R.id.rg_codec)
+    @BindView(R.id.rg_codec)
     RadioGroup videoCodecRg;
 
-    @Bind(R.id.rg_streaming)
+    @BindView(R.id.rg_streaming)
     RadioGroup streamingTypeRg;
 
-    @Bind(R.id.rg_prepared_start)
+    @BindView(R.id.rg_prepared_start)
     RadioGroup startOnPreparedRg;
 
-    @Bind(R.id.edtxt_uri)
+    @BindView(R.id.edtxt_uri)
     EditText addressEdtxt;
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.listview)
+    @BindView(R.id.listview)
     ListView listView;
 
-    @Bind(R.id.txtv_version)
+    @BindView(R.id.txtv_version)
     TextView versionTxtv;
 
-    @Bind(R.id.cb_background_play)
+    @BindView(R.id.cb_background_play)
     CheckBox backgroundPlayCb;
 
-    @Bind(R.id.cb_show_debug_info)
+    @BindView(R.id.cb_show_debug_info)
     CheckBox showDebugInfoCb;
 
     private static final int REQUEST_CODE = 200;
@@ -86,16 +83,27 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.demo_main);
         ButterKnife.bind(this);
         addressEdtxt.clearFocus();
-        setSupportActionBar(toolbar);
         demoNames = getResources().getStringArray(R.array.demoNames);
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, demoNames));
         listView.setOnItemClickListener(this);
         demoDirects = getResources().getStringArray(R.array.demoDirects);
-        versionTxtv.setText(UBuild.VERSION + " " + getResources().getString(R.string.sdk_address));
+        versionTxtv.setText(UBuild.NAME + "-" + UBuild.VERSION + " " + getResources().getString(R.string.sdk_address));
         permissionsChecker = new PermissionsChecker(this);
         if (permissionsChecker.lacksPermissions(permissions)) {
             PermissionsActivity.startActivityForResult(this, REQUEST_CODE, permissions);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override

@@ -18,21 +18,21 @@ import com.ucloud.uvod.example.R;
 import com.ucloud.uvod.example.ui.base.UMenuItem;
 import com.ucloud.uvod.example.ui.base.UMenuItemHelper;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class USettingMenuView extends LinearLayout {
 
-    @Bind(R.id.listview)
+    @BindView(R.id.listview)
     ListView settingItemListView;
 
-    @Bind(R.id.listview_content)
+    @BindView(R.id.listview_content)
     ListView settingContentItemListView;
 
-    @Bind(R.id.menu_description_txtv)
+    @BindView(R.id.menu_description_txtv)
     TextView menuContentTitleTxtv;
 
-    @Bind(R.id.menu_txtv)
+    @BindView(R.id.menu_txtv)
     TextView mainMenuTitleTxtv;
 
     private UMenuItem mainMenuItem;

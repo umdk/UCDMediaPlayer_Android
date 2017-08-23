@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.example.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UBottomView extends RelativeLayout {
@@ -29,31 +29,31 @@ public class UBottomView extends RelativeLayout {
 
     private Callback callabck;
 
-    @Bind(R.id.img_bt_pause_play)
+    @BindView(R.id.img_bt_pause_play)
     ImageButton playPauseButton;
 
-    @Bind(R.id.seekbar)
+    @BindView(R.id.seekbar)
     SeekBar seekBar;
 
-    @Bind(R.id.fast_seekbar)
+    @BindView(R.id.fast_seekbar)
     SeekBar fastSeekBar;
 
-    @Bind(R.id.txtv_current_position)
+    @BindView(R.id.txtv_current_position)
     TextView currentPositionTxtv;
 
-    @Bind(R.id.txtv_duration)
+    @BindView(R.id.txtv_duration)
     TextView durationTxtv;
 
-    @Bind(R.id.fast_seek_index_txtv)
+    @BindView(R.id.fast_seek_index_txtv)
     TextView seekingIndexTxtv;
 
-    @Bind(R.id.fast_seek_index_rl)
+    @BindView(R.id.fast_seek_index_rl)
     ViewGroup seekIndexView;
 
-    @Bind(R.id.img_btn_brightness)
+    @BindView(R.id.img_btn_brightness)
     ImageButton brightnessImgBtn;
 
-    @Bind(R.id.img_btn_volume)
+    @BindView(R.id.img_btn_volume)
     ImageButton volumeImgBtn;
 
     private long duration;
