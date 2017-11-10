@@ -59,7 +59,7 @@ public class UEasyPlayerActivity extends Activity implements USettingMenuView.Ca
         profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0)); //标识播放的流为直播源，还是点播源(0点播，1直播)
         profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1)); //当prepread成功后自动开始播放，(无须自己监听prepared消息调用start方法) 直播推荐开启(1开启，0不开启)
         profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0)); //视频解码方式，推荐软解
-        profile.setInteger(UMediaProfile.KEY_RENDER_SURFACUE, 1); //视频渲染方式，推荐
+        profile.setInteger(UMediaProfile.KEY_RENDER_TEXTURE, 1); //视频渲染方式，推荐
         profile.setInteger(UMediaProfile.KEY_PREPARE_TIMEOUT, 1000 * 15); //设置第一次播放流地址时，prepared超时时间(超过设置的值，sdk内部会做重连动作，单位ms)
         profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 15); //设置播放过程中，网络卡顿出现读取数据超时(超过设置的值，sdk内部会做重连动作，单位ms)
         profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0)); //设置切换到后台是否继续播放，直播推荐开启，(默认为0不开启)
