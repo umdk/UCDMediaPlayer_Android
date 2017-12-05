@@ -315,7 +315,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     notifyHideBackgroundView(0);
                     break;
                 case AUDIO_RENDERING_START:
-//                    notifyHideLoadingView(0);
+                    notifyHideLoadingView(0);
                     break;
                 default:
                     break;

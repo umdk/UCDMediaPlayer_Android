@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -50,8 +51,18 @@ public class UEasyPlayerActivity extends Activity implements USettingMenuView.Ca
         uri = getIntent().getStringExtra(MainActivity.KEY_URI);
         String intentAction = getIntent().getAction();
         if (!TextUtils.isEmpty(intentAction) && intentAction.equals(Intent.ACTION_VIEW)) {
-            uri = getIntent().getDataString();
-            uri = Uri.decode(uri);
+            Uri data = getIntent().getData();
+            if (data != null && "content".equals(getIntent().getScheme())) {
+                Cursor cursor = this.getContentResolver().query(data, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA}, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    uri = cursor.getString(0);
+                    cursor.close();
+                }
+            }
+            else {
+                uri = Uri.decode(uri);
+            }
         }
         easyPlayer.init(this);
 
