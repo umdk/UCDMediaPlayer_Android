@@ -18,3 +18,7 @@
 -keep class com.ucloud.** {
    *;
 }
+
+-keep class merge.tv.** {
+   *;
+}

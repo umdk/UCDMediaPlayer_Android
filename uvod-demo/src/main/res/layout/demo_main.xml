@@ -204,7 +204,7 @@
                     android:id="@+id/edtxt_uri"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="http://mediademo.ufile.ucloud.com.cn/ucloud_promo_140s.mp4" />
+                    android:text="http://ucdsdk.ufile.ucloud.com.cn/video/ucloud_promo_140s.mp4" />
 
             </LinearLayout>
         </LinearLayout>
