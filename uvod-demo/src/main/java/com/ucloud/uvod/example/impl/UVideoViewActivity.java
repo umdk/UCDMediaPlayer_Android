@@ -9,6 +9,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -24,6 +26,9 @@ import com.ucloud.uvod.example.ui.AndroidMediaController;
 import com.ucloud.uvod.example.ui.TracksFragment;
 import com.ucloud.uvod.widget.UVideoView;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,6 +82,31 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
         profile.setInteger(UMediaProfile.KEY_ENABLE_NETWORK_RECOVERY_RECONNECT, 1); //当发生网络切换恢复时SDK内部会做重连（默认为0 不开启 1不开启)
         profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0); // 点播默认不开启延时丢帧策略
         profile.setInteger(UMediaProfile.KEY_IS_MUSIC_PLAYER, 0); //如果播放的是纯音频流，设置为1，默认为0
+
+        //示例 1：若设置不止一个http请求头字段 （Cookie， Cache-Control等）
+        //采用如下外部构造可以满足所有HTTP标准头的设置 （value内容自行拼接处理）value格式不清楚的可以参考http标准的写法，以下尽给出了Cookie & Cache-Control字段的写法
+
+        Map<String, String> headersMap = new HashMap<>();
+
+//        headersMap.put("Cookie", "username=www.ucloud; password=cn;");
+//        headersMap.put("Cache-Control", "no-cache;");
+//        profile.setExtendMap(UMediaProfile.KEY_HEADERS, headersMap);
+
+
+        //示例 2： 对Cookie value内容进行了拼接优化处理，不需要自己拼接字段，key,value 以map形式传递 （key,value仅限string内容，若不是先自行转换成string）
+
+        Map<String, String> headCookieMap = new HashMap<>();
+
+        headCookieMap.put("username", "www.ucloud");
+        headCookieMap.put("password", "cn");
+        headCookieMap.put("test", "test");
+
+        //若示例 1 先设置了Cookie 示例2 同样设置了，无论示例2，在示例1前设置还是后设置 Cookie的值以第二个接口为准，顺序无关。 示例1 设置的其它值同样有效
+
+        profile.setExtendMap(UMediaProfile.KEY_HEADER_COOKIE, headCookieMap); // 针对 cookie设置的接口
+
+//        profile.setExtendMap(UMediaProfile.KEY_HEADERS, null);       //清除所有自定义设置的头字段，清除后http不会携带所有自定义头字段 (包括示例2接口方式设置的cookie)
+//        profile.setExtendMap(UMediaProfile.KEY_HEADER_COOKIE, null); //清除cookie字段，清除后http不会携带cookie字段，其它字段没有影响 （示例1方式设置的Cookie，也会移除）
 
         if (uri != null && uri.endsWith("m3u8")) {
             profile.setInteger(UMediaProfile.KEY_MAX_CACHED_DURATION, 0); // m3u8 默认不开启延时丢帧策略
