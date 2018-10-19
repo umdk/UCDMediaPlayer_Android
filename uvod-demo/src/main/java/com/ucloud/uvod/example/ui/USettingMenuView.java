@@ -100,7 +100,7 @@ public class USettingMenuView extends LinearLayout {
                                     int position, long id) {
                 UMenuItem menuItem = mainMenuItem.childs.get(mainMenuItem.defaultSelected);
                 UMenuItem contentMenuItem = menuItem.childs.get(position);
-                if (menuItem.defaultSelected != Integer.parseInt(contentMenuItem.type)) {
+                if (menuItem.defaultSelected != position) {
                     menuItem.defaultSelected = position;
                     menuSettingContentAdapter.notifyDataSetChanged();
                     menuSettingAdapter.notifyDataSetChanged();

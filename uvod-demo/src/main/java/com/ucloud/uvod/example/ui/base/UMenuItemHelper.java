@@ -45,12 +45,20 @@ public final class UMenuItemHelper {
                 defaultSelect);
     }
 
+    public UMenuItem buildSpeedModeMenuItem(int defaultSelect) {
+        return buildVideoMenuItem(
+                APP_CONTEXT.getResources().getString(R.string.menu_item_title_speed_mode),
+                R.array.pref_speed_names,
+                R.array.pref_speed_values,
+                defaultSelect);
+    }
+
     public UMenuItem buildVideoMenuItem(String title, int resNameId, int resValueId, int defaultSelect) {
-        UMenuItem menuItem = new UMenuItem.Builder().title(title).index(defaultSelect).builder();
+        UMenuItem menuItem = new UMenuItem.Builder().title(title).defaultSelectedIndex(defaultSelect).builder();
         String[] retNames = APP_CONTEXT.getResources().getStringArray(resNameId);
         String[] types = APP_CONTEXT.getResources().getStringArray(resValueId);
         for (int i = 0; i < retNames.length; i++) {
-            menuItem.childs.add(new UMenuItem.Builder().title(retNames[i]).type(types[i] + "").parent(menuItem).builder());
+            menuItem.childs.add(new UMenuItem.Builder().title(retNames[i]).type(types[i] + "").parent(menuItem).index(i).builder());
         }
         return menuItem;
     }

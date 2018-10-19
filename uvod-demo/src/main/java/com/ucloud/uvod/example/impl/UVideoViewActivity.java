@@ -71,7 +71,6 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
         profile.setInteger(UMediaProfile.KEY_LIVE_STREAMING, getIntent().getIntExtra(MainActivity.KEY_LIVE_STREMAING, 0)); //标识播放的流为直播源，还是点播源(0点播，1直播)
         profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, getIntent().getIntExtra(MainActivity.KEY_START_ON_PREPARED, 1)); //当prepread成功后自动开始播放，(无须自己监听prepared消息调用start方法) 直播推荐开启(1开启，0不开启)
         profile.setInteger(UMediaProfile.KEY_MEDIACODEC, getIntent().getIntExtra(MainActivity.KEY_MEDIACODEC, 0)); //视频解码方式，推荐软解
-        profile.setInteger(UMediaProfile.KEY_RENDER_SURFACUE, 1); //视频渲染方式，推荐, Demo为展示三种切换效果，都设置enable，都设置了，默认优先选择KEY_RENDER_SURFACUE
         profile.setInteger(UMediaProfile.KEY_RENDER_TEXTURE, 1);
         profile.setInteger(UMediaProfile.KEY_RENDER_NO, 1);
         profile.setInteger(UMediaProfile.KEY_PREPARE_TIMEOUT, 1000 * 15); //设置第一次播放流地址时，prepared超时时间(超过设置的值，sdk内部会做重连动作，单位ms)
@@ -97,9 +96,9 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
 
         Map<String, String> headCookieMap = new HashMap<>();
 
-        headCookieMap.put("username", "www.ucloud");
-        headCookieMap.put("password", "cn");
-        headCookieMap.put("test", "test");
+//        headCookieMap.put("username", "www.ucloud");
+//        headCookieMap.put("password", "cn");
+//        headCookieMap.put("test", "test");
 
         //若示例 1 先设置了Cookie 示例2 同样设置了，无论示例2，在示例1前设置还是后设置 Cookie的值以第二个接口为准，顺序无关。 示例1 设置的其它值同样有效
 
@@ -127,7 +126,11 @@ public class UVideoViewActivity extends AppCompatActivity implements TracksFragm
             videoView.setHudView(debugInfoHudView);
         }
         videoView.setOnPlayerStateListener(this);
+
+//        videoView.setSpeed(1.25f); //0.5 - 2.0f 推荐设置 区间范围外的值仍然生效，但是视听效果已经比较差
+
         videoView.setVideoPath(uri);
+
     }
 
     @Override

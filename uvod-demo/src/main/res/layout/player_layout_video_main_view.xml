@@ -419,4 +419,22 @@
         android:visibility="invisible"
         android:padding="8dp" />
 
+    <ImageView
+        android:layout_height="@dimen/dp_320"
+        android:layout_width="@dimen/dp_180"
+        android:id="@+id/img_view_frame"
+        android:layout_gravity="right|top"
+        android:layout_margin="@dimen/dp_20"
+        android:visibility="gone"
+         />
+
+    <ImageView
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:id="@+id/img_btn_frame_camera"
+        android:layout_gravity="center_vertical|left"
+        android:layout_margin="@dimen/dp_20"
+        android:scaleType="fitCenter"
+        android:src="@drawable/player_icon_frame_camera"
+        />
 </com.ucloud.uvod.example.ui.UVideoMainView>

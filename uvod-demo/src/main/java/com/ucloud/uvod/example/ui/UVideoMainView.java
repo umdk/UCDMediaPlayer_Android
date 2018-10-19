@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -17,7 +18,9 @@ import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.ucloud.ucommon.Utils;
 import com.ucloud.uvod.UMediaProfile;
@@ -38,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by lw.tan on 2015/10/10.
  *
  */
-public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView.Callback, UBottomView.Callback, USettingMenuView.Callback {
+public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView.Callback, UBottomView.Callback, USettingMenuView.Callback, View.OnClickListener {
     public static final String TAG = "UVideoMainView";
 
     private Activity activity;
@@ -52,6 +55,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     private static final int MSG_UPDATE_PROGRSS = 7;
     private static final int MSG_SHOW_BACKGROUND_VIEW = 8;
     private static final int MSG_HIDE_BACKGROUND_VIEW = 9;
+    private static final int MSG_HIDE_FRAME_VIEW = 10;
 
     private static final int UPDATE_PROGRESS_INTERVAL = 20;
     private static final int MENU_VIEW_ANIMATION_DURATION = 100;
@@ -91,7 +95,14 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
     @BindView(R.id.rotate_layout)
     URotateLayout rotateLayout;
 
+    @BindView(R.id.img_view_frame)
+    ImageView imgViewFrame;
+
+    @BindView(R.id.img_btn_frame_camera)
+    ImageView imgBtnFrameCamera;
+
     private int ratio = UVideoView.VIDEO_RATIO_FIT_PARENT;
+    private float speed = 1.0f;
 
     private GestureDetector gestureDetector;
 
@@ -155,6 +166,9 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                     break;
                 case MSG_HIDE_BACKGROUND_VIEW:
                     doHideBackgroundView();
+                    break;
+                case MSG_HIDE_FRAME_VIEW:
+                    doHideFrameView();
                     break;
                 default:
                     break;
@@ -233,6 +247,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         if (playerStatusView != null) {
             playerStatusView.setOnClickListener(playerStatusViewClickListener);
         }
+
+        imgBtnFrameCamera.setOnClickListener(this);
     }
 
     OnClickListener playerStatusViewClickListener = new OnClickListener() {
@@ -472,6 +488,29 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         }
     };
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.img_btn_frame_camera:
+                if (videoView == null) {
+                    return;
+                }
+
+                Bitmap frame = videoView.getCurrentVideoBitmap();
+
+                if (frame != null && imgViewFrame != null) {
+                    imgViewFrame.invalidate();
+                    imgViewFrame.setImageBitmap(frame);
+                    imgViewFrame.setVisibility(View.VISIBLE);
+                    notifyHideFrameView(2000);
+                } else {
+                    Toast.makeText(getContext(), R.string.info6, Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+        }
+    }
+
     class InnerGestureDetector extends GestureDetector.SimpleOnGestureListener {
         private float x1 = -1;
         private float y1 = -1;
@@ -682,6 +721,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
             menuItemHelper.release();
             menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoRatioMenuItem(ratio), true);
             menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildVideoPlayerMenuItem(avProfile.getInteger(UMediaProfile.KEY_MEDIACODEC, 0)));
+            menuItemHelper.register(UMenuItemHelper.getInstance(getContext()).buildSpeedModeMenuItem(1), true);
             settingMenuView.init();
             settingMenuView.setOnMenuItemSelectedListener(this);
             isInitSettingMenu = true;
@@ -855,9 +895,20 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         }
     }
 
+    private void doHideFrameView() {
+        imgViewFrame.setVisibility(View.GONE);
+    }
+
     private void notifyUpdateProgress(int delay) {
         Message msg = Message.obtain();
         msg.what = MSG_UPDATE_PROGRSS;
+        uiHandler.removeMessages(msg.what);
+        uiHandler.sendMessageDelayed(msg, delay);
+    }
+
+    private void notifyHideFrameView(int delay) {
+        Message msg = Message.obtain();
+        msg.what = MSG_HIDE_FRAME_VIEW;
         uiHandler.removeMessages(msg.what);
         uiHandler.sendMessageDelayed(msg, delay);
     }
@@ -900,6 +951,9 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                         seekWhenPrepared = videoView.getCurrentPosition();
                         videoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                         videoView.setVideoPath(uri, seekWhenPrepared);
+                    }
+                    else if (item.parent.title.equals(activity.getResources().getString(R.string.menu_item_title_speed_mode))) {
+                        videoView.setSpeed(Float.parseFloat(item.type));
                     }
                     notifyHideSettingMenuView(0);
                 }

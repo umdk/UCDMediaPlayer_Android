@@ -3,6 +3,7 @@
     <string name="app_name">UVideo</string>
     <string name="menu_item_title_ratio">画幅</string>
     <string name="menu_item_title_videocodec">解码器</string>
+    <string name="menu_item_title_speed_mode">倍速</string>
     <string name="menu_main_title">菜单</string>
     <string name="loading">玩命加载中....</string>
     <string name="sdk_address">https://github.com/umdk</string>
@@ -15,6 +16,7 @@
     <string name="info3">当前网络: ehternet</string>
     <string name="info4">当前网络: wifi</string>
     <string name="info5">URL为空</string>
+    <string name="info6">截帧失败</string>
 
     <string-array name="pref_videocodec_names">
         <item>软解</item>
@@ -42,5 +44,21 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+    </string-array>
+
+    <string-array name="pref_speed_names">
+        <item>0.75</item>
+        <item>1.0</item>
+        <item>1.25</item>
+        <item>1.5</item>
+        <item>2.0</item>
+    </string-array>
+
+    <string-array name="pref_speed_values">
+        <item>0.75</item>
+        <item>1.0</item>
+        <item>1.25</item>
+        <item>1.5</item>
+        <item>2.0</item>
     </string-array>
 </resources>
