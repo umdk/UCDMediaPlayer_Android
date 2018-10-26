@@ -710,7 +710,12 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
 
     private void togglePlayerToPlay() {
         playerStatusView.setVisibility(View.GONE);
-        videoView.start();
+        if (videoView.isInPlaybackState()) {
+            videoView.start();
+        } else {
+            videoView.setVideoPath(uri);
+        }
+
         bottomView.togglePlayButtonIcon(R.drawable.player_icon_bottomview_pause_button_normal);
     }
 
@@ -740,6 +745,7 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
         }
         if (bottomView != null && videoView != null && playerStatusView != null) {
             togglePlayerToPause();
+//            videoView.reset(); //清除最后一帧画面
         }
     }
 
@@ -945,10 +951,13 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
                         videoView.applyAspectRatio(Integer.parseInt(item.type));
                     }
                     else if (item.parent.title.equals(activity.getResources().getString(R.string.menu_item_title_videocodec))) {
-//                        notifyShowBackgroundView(0); //根据需要自行决定切换时是否需要显示封面图片，自定义封面在布局文件指定或代码实现
+                      //根据需要自行决定切换时是否需要显示封面图片，自定义封面在布局文件指定或代码实现
+                        //notifyShowBackgroundView(0);
                         notifyShowLoadingView(0);
                         videoView.pause();
                         seekWhenPrepared = videoView.getCurrentPosition();
+                        //具备清除上一次播放的画面效果， 当uri发生变化时，内部默认会自动清除
+//                         videoView.reset();
                         videoView.getMediaProfile().setInteger(UMediaProfile.KEY_MEDIACODEC, Integer.parseInt(item.type));
                         videoView.setVideoPath(uri, seekWhenPrepared);
                     }

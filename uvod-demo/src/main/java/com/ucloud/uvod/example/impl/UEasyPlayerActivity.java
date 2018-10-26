@@ -77,10 +77,10 @@ public class UEasyPlayerActivity extends Activity implements USettingMenuView.Ca
         profile.setInteger(UMediaProfile.KEY_READ_FRAME_TIMEOUT, 1000 * 15); //设置播放过程中，网络卡顿出现读取数据超时(超过设置的值，sdk内部会做重连动作，单位ms)
         profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, getIntent().getIntExtra(MainActivity.KEY_ENABLE_BACKGROUND_PLAY, 0)); //设置切换到后台是否继续播放，直播推荐开启，(默认为0不开启)
         profile.setInteger(UMediaProfile.KEY_MAX_RECONNECT_COUNT, 5); //当发生IOERROR PREPARE_TIMEOUT READ_FRAME_TIMEOUT 最大重连次数，默认5次
-
         //若需要区分4G是否继续播放等与用户确认相关的操作，设置为0，自行根据Android API监听网络状态调用setVideoPath做重连控制操作。
-        profile.setInteger(UMediaProfile.KEY_ENABLE_NETWORK_RECOVERY_RECONNECT, 1); //当发生网络切换恢复时SDK内部会做重连（默认为0 不开启 1不开启)
+        profile.setInteger(UMediaProfile.KEY_ENABLE_NETWORK_RECOVERY_RECONNECT, 1); //当发生网络切换恢复时SDK内部会做重连（0 不开启 1开启, 默认为0)
         profile.setInteger(UMediaProfile.KEY_IS_MUSIC_PLAYER, 0); //如果播放的是纯音频流，设置为1，默认为0
+        profile.setInteger(UMediaProfile.KEY_ENABLE_ACCURATE_SEEK, 0); //精准seek 1 开启， 0 不开启， 默认 0没有开启/ seek完成时间相比没有开启会增加
 
         //示例 1：若设置不止一个http请求头字段 （Cookie， Cache-Control等）
         //采用如下外部构造可以满足所有HTTP标准头的设置 （value内容自行拼接处理）value格式不清楚的可以参考http标准的写法，以下尽给出了Cookie & Cache-Control字段的写法
