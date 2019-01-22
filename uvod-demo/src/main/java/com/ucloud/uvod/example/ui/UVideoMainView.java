@@ -280,6 +280,8 @@ public class UVideoMainView extends FrameLayout implements UEasyPlayer, UTopView
             switch (state) {
                 case PREPARING:
                     notifyShowLoadingView(0);
+                    //如果初始化需要其它控件获取到焦点,而不是UVideoView
+//                    otherView.requestFocus();
                     break;
                 case PREPARED:
                     dealOnPrepared();
