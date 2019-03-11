@@ -1,6 +1,6 @@
-# UCloud 多媒体播放器 SDK 文档
+# 多媒体播放器 SDK 文档
 
-UCDMediaPlayer SDK 是由 UCloud 提供的支持直播、点播播放器。
+UCDMediaPlayer SDK 是一款支持直播、点播播放器。
 
 ![screenshot-1](screenshot/screenshot-1.png)  
 ![screenshot-2](screenshot/screenshot-2.png)  
@@ -44,9 +44,7 @@ Android 2.3+ (API 9+)
 
 UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 
-  - 主 页：<https://www.ucloud.cn/>
-  - issue：[查看已有 issues 和提交 Bug 推荐][3]
-  - 邮 箱：[sdk_spt@ucloud.cn][4]
+  - 请尽量在 [github issue][3] 上公开讨论技术问题，私下邮件询问恕不一一回复
 
 ### 问题反馈参考模板
 
@@ -62,6 +60,5 @@ UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 [1]: https://github.com/Bilibili/ijkplayer
 [2]: https://github.com/umdk/UCDMediaPlayer_Android/wiki
 [3]: https://github.com/umdk/UCDMediaPlayer_Android/issues
-[4]: mailto:sdk_spt@ucloud.cn
 [5]: https://github.com/umdk/UCDMediaPlayer_Android/wiki/6-常见问题#6
 [6]: https://github.com/umdk/UCDMediaPlayer_Android/wiki/8-版本历史#8
