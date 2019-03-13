@@ -44,7 +44,7 @@ Android 2.3+ (API 9+)
 
 UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 
-  - 请尽量在 [github issue][3] 上公开讨论技术问题，私下邮件询问恕不一一回复
+  - 该项目系个人维护，精力有限，请尽量在 [github issue][3] 上公开讨论技术问题，私下邮件询问恕不一一回复
 
 ### 问题反馈参考模板
 
@@ -55,7 +55,6 @@ UMediaPlayer 目前基于 [ijkplayer][1] , 感谢 [ijkplayer][1].
 |SDK 版本|v1.4.1|
 |问题描述|描述问题现象|
 |操作路径|重现问题的操作步骤|
-|附件|播放界面截屏、报错日志截图等|
 
 [1]: https://github.com/Bilibili/ijkplayer
 [2]: https://github.com/umdk/UCDMediaPlayer_Android/wiki
