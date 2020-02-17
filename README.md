@@ -1,5 +1,8 @@
 # 多媒体播放器 SDK 文档
 
+## 关于维护
+此项目已于2019年3月停止维护，请慎重使用。  
+
 UCDMediaPlayer SDK 是一款支持直播、点播播放器。
 
 ![screenshot-1](screenshot/screenshot-1.png)  
